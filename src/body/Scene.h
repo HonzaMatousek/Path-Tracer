@@ -7,7 +7,7 @@ class Scene : public Body {
     std::vector<std::unique_ptr<Body>> bodies;
 public:
     Scene() = default;
-    virtual ~Scene() = default;
+    ~Scene() override = default;
 
     void AddBody(std::unique_ptr<Body> body);
 

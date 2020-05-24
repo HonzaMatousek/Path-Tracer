@@ -1,9 +1,10 @@
 #include <iostream>
 
-#include "body/Sphere.h"
 #include "body/Scene.h"
-#include "camera/Camera.h"
+#include "body/Sphere.h"
+#include "body/Plane.h"
 
+#include "camera/Camera.h"
 #include "image/ImageJPEG.h"
 
 const int image_width = 800;
@@ -16,8 +17,9 @@ int main() {
 
     Scene scene;
     scene.AddBody(std::make_unique<Sphere>(Vector3D(10,-1,0), 1, greenLight));
-    scene.AddBody(std::make_unique<Sphere>(Vector3D(10,-1,2), 0.5, mirror));
-    Camera camera(Vector3D(0,0,0), Vector3D(1,0,0), Vector3D(0,1,0), image_width, image_height, 30);
+    //scene.AddBody(std::make_unique<Sphere>(Vector3D(10,-1,2), 0.5, mirror));
+    scene.AddBody(std::make_unique<Plane>(Vector3D(10,-1,2), Vector3D(0,0,-1), mirror));
+    Camera camera(Vector3D(0,0,0), Vector3D(1,0,0), Vector3D(0,1,0), image_width, image_height, 60);
 
     ImageJPEG image(image_width, image_height, 75);
 

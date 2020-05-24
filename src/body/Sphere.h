@@ -8,7 +8,7 @@ class Sphere : public Body {
 
 public:
     Sphere(const Vector3D & center, double radius, const Material & material = Material());
-    virtual ~Sphere() = default;
+    ~Sphere() override = default;
 
     [[ nodiscard ]]
     std::unique_ptr<Intersection> Intersect(const Ray &ray) const override;
