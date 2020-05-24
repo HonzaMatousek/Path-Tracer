@@ -8,10 +8,11 @@
 
 const int image_width = 800;
 const int image_height = 600;
+const int iteration_limit = 10;
 
 int main() {
     Material greenLight(Color(0,100,0), Color(0,0,0));
-    Material mirror(Color(0,0,0), Color(1,1,1));
+    Material mirror(Color(0,0,0.1), Color(1,1,1));
 
     Scene scene;
     scene.AddBody(std::make_unique<Sphere>(Vector3D(10,-1,0), 1, greenLight));
@@ -22,9 +23,21 @@ int main() {
 
     for(int y = 0; y < image_height; y++) {
         for(int x = 0; x < image_width; x++) {
-            auto intersection = scene.Intersect(camera.Project(x,y));
-            if(intersection) {
-                image.AddPixel(x,y, intersection->material.emissive);
+            Ray ray = camera.Project(x, y);
+            Color albedoMultiplier(1,1,1);
+            for(int i = 0; i < iteration_limit; i++) {
+                auto intersection = scene.Intersect(ray);
+                if (intersection) {
+                    image.AddPixel(x, y, intersection->material.emissive * albedoMultiplier);
+                    albedoMultiplier *= intersection->material.albedo;
+                    if(albedoMultiplier == Color()) {
+                        break;
+                    }
+                    ray = intersection->Reflect(ray);
+                }
+                else {
+                    break;
+                }
             }
         }
     }

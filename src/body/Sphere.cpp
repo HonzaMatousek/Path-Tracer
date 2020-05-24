@@ -26,10 +26,10 @@ std::unique_ptr<Intersection> Sphere::Intersect(const Ray &ray) const {
         return std::make_unique<Intersection>(point, point - center, t0, material);
     }
 
-    if (t1 >= 0) {
+    /*if (t1 >= 0) {
         Vector3D point = ray.Point(t1);
         return std::make_unique<Intersection>(point, point - center, t1, material);
-    }
+    }*/
 
     return nullptr;
 }
