@@ -1,4 +1,5 @@
 #include "Color.h"
+#include <algorithm>
 
 Color Color::operator+(const Color & rhs) const {
     return Color(r + rhs.r, g + rhs.g, b + rhs.b);
@@ -77,7 +78,7 @@ Color &Color::operator/=(const Color & rhs) {
 
 void Color::WriteIntoByteBufferRGB(unsigned char *buffer, double exposition) const {
     // use physically correct exposition (Reinhard's tone mapping?)
-    buffer[0] = (unsigned char)(r * exposition);
-    buffer[1] = (unsigned char)(g * exposition);
-    buffer[2] = (unsigned char)(b * exposition);
+    buffer[0] = (unsigned char)std::clamp<double>(r * exposition, 0, 255);
+    buffer[1] = (unsigned char)std::clamp<double>(g * exposition, 0, 255);
+    buffer[2] = (unsigned char)std::clamp<double>(b * exposition, 0, 255);
 }

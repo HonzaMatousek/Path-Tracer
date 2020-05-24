@@ -7,7 +7,7 @@ class Sphere : public Body {
     double radius;
 
 public:
-    Sphere(const Vector3D & center, double radius);
+    Sphere(const Vector3D & center, double radius, const Material & material = Material());
     virtual ~Sphere() = default;
 
     [[ nodiscard ]]

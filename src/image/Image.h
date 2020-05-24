@@ -2,7 +2,7 @@
 
 #include <string>
 #include <vector>
-#include "../math/Color.h"
+#include "../material/Color.h"
 
 class Image {
 protected:
