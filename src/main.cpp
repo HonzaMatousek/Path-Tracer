@@ -8,11 +8,12 @@
 #include "camera/Camera.h"
 #include "image/ImageJPEG.h"
 #include "body/Triangle.h"
+#include "material/BlackBodyRadiation.h"
 
 const int image_width = 960;
 const int image_height = 720;
 const int iteration_limit = 3;
-const int samples = 1000;
+const int samples = 1;
 
 int main() {
     Material greenLight(Color(0,100,0), Color(0,0,0));
@@ -25,6 +26,10 @@ int main() {
     Material whiteDiffuse(Color(0,0,0), Color(0.4,0.4,0.4), false);
     Material redDiffuse(Color(0,0,0), Color(0.4,0.0,0.0), false);
     Material greenDiffuse(Color(0,0,0), Color(0.0,0.4,0.0), false);
+
+    Material sun(BlackBodyRadiation(5778), Color(0,0,0));
+    Material moltenCopper(BlackBodyRadiation(1085 + 273.16), Color(0.9333,0.6196,0.5373));
+    Material moltenIron(BlackBodyRadiation(1812), Color(0.8863,0.8745,0.8235));
 
     Scene scene;
     //scene.AddBody(std::make_unique<Sphere>(Vector3D(10,-1,0), 1, greenLight));
@@ -41,6 +46,7 @@ int main() {
 
     //scene.AddBody(std::make_unique<Triangle>(Vector3D(10,-1,1), Vector3D(10,1,0), Vector3D(10,-1,-1), greenLight));
 
+    /*
     // protejsi stena
     scene.AddBody(std::make_unique<Triangle>(Vector3D(5,-1,1), Vector3D(5,1,-1), Vector3D(5,-1,-1), whiteDiffuse));
     scene.AddBody(std::make_unique<Triangle>(Vector3D(5,-1,1), Vector3D(5,1,1), Vector3D(5,1,-1), whiteDiffuse));
@@ -66,7 +72,10 @@ int main() {
     // koule
     scene.AddBody(std::make_unique<Sphere>(Vector3D(3,-0.75,-0.25), 0.25, whiteDiffuse));
 
-    scene.AddBody(std::make_unique<Sphere>(Vector3D(3.5,-0.80,0.25), 0.20, copper));
+    scene.AddBody(std::make_unique<Sphere>(Vector3D(3.5,-0.80,0.25), 0.20, copper));*/
+
+    scene.AddBody(std::make_unique<Sphere>(Vector3D(4,0,-1), 1, moltenIron));
+    scene.AddBody(std::make_unique<Sphere>(Vector3D(4,0,1), 0.8, moltenCopper));
 
     Camera camera(Vector3D(0,-0,0), Vector3D(1,0,0), Vector3D(0,1,0), image_width, image_height, 60);
 
@@ -97,7 +106,7 @@ int main() {
         std::cout << sample << "/" << samples << std::endl;
     }
 
-    image.Save("image.jpeg", 100.0 / samples);
+    image.Save("image2.jpeg", 1e15 / samples);
 
     return 0;
 }
