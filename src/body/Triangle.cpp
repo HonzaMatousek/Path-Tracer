@@ -17,13 +17,17 @@ std::unique_ptr<Intersection> Triangle::Intersect(const Ray &ray) const {
             Vector3D point_diff = point - a;
             // a + _u * u + _v * v = point
             double _u, _v;
-            if(std::abs(u.y * v.z - u.z * v.y) < 0.0001) {
-                _u = (point_diff.x * v.y - point_diff.y * v.x) / (u.x * v.y - u.y * v.x);
-                _v = (u.x * point_diff.y - u.y * point_diff.x) / (u.x * v.y - u.y * v.x);
-            }
-            else {
+            if(std::abs(u.y * v.z - u.z * v.y) > 0.0001) {
                 _u = (point_diff.y * v.z - point_diff.z * v.y) / (u.y * v.z - u.z * v.y);
                 _v = (u.y * point_diff.z - u.z * point_diff.y) / (u.y * v.z - u.z * v.y);
+            }
+            else if(std::abs(u.z * v.x - u.x * v.z) > 0.0001) {
+                _u = (point_diff.z * v.x - point_diff.x * v.z) / (u.z * v.x - u.x * v.z);
+                _v = (u.z * point_diff.x - u.x * point_diff.z) / (u.z * v.x - u.x * v.z);
+            }
+            else {
+                _u = (point_diff.x * v.y - point_diff.y * v.x) / (u.x * v.y - u.y * v.x);
+                _v = (u.x * point_diff.y - u.y * point_diff.x) / (u.x * v.y - u.y * v.x);
             }
             if(_u < 0 || _v < 0 || _v + _u > 1) return nullptr;
             return std::make_unique<Intersection>(point, normal, t, material);
