@@ -14,7 +14,7 @@ public:
     Intersection(const Vector3D & point, const Vector3D & normal, double t, const Material & material);
 
     [[ nodiscard ]]
-    Ray Reflect(const Ray & incoming);
+    Ray Reflect(const Ray & incoming, double & powerMultiplier);
 
     bool operator < (const Intersection & rhs) const;
 };
