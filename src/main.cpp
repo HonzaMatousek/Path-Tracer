@@ -15,6 +15,9 @@ const int iteration_limit = 10;
 
 int main() {
     Material greenLight(Color(0,100,0), Color(0,0,0));
+    Material redLight(Color(100,0,0), Color(0,0,0));
+    Material blueLight(Color(0,0,100), Color(0,0,0));
+    Material whiteLight(Color(100,100,100), Color(0,0,0));
     Material mirror(Color(0,0,0.1), Color(1,1,1));
 
     Scene scene;
@@ -30,7 +33,32 @@ int main() {
         scene.AddBody(std::make_unique<Sphere>(Vector3D(d1(r) + 10,d1(r),d1(r)*2), d2(r), Material(Color(d2(r),d2(r),d2(r)), Color(d2(r),d2(r),d2(r)))));
     }*/
 
-    scene.AddBody(std::make_unique<Triangle>(Vector3D(10,-1,1), Vector3D(10,1,0), Vector3D(10,-1,-1), greenLight));
+    //scene.AddBody(std::make_unique<Triangle>(Vector3D(10,-1,1), Vector3D(10,1,0), Vector3D(10,-1,-1), greenLight));
+
+    // protejsi stena
+    scene.AddBody(std::make_unique<Triangle>(Vector3D(5,-1,1), Vector3D(5,1,-1), Vector3D(5,-1,-1), greenLight));
+    scene.AddBody(std::make_unique<Triangle>(Vector3D(5,-1,1), Vector3D(5,1,1), Vector3D(5,1,-1), greenLight));
+
+    // leva
+    scene.AddBody(std::make_unique<Triangle>(Vector3D(5,-1,1), Vector3D(0,-1,1), Vector3D(0,1,1), redLight));
+    scene.AddBody(std::make_unique<Triangle>(Vector3D(5,-1,1), Vector3D(0,1,1), Vector3D(5,1,1), redLight));
+
+    // prava
+    scene.AddBody(std::make_unique<Triangle>(Vector3D(5,-1,-1), Vector3D(0,1,-1), Vector3D(0,-1,-1), redLight));
+    scene.AddBody(std::make_unique<Triangle>(Vector3D(5,-1,-1), Vector3D(5,1,-1), Vector3D(0,1,-1), redLight));
+
+    // podlaha
+    scene.AddBody(std::make_unique<Plane>(Vector3D(5,-1,-1), Vector3D(0,1,0), blueLight));
+
+    // strop
+    scene.AddBody(std::make_unique<Plane>(Vector3D(5,1,-1), Vector3D(0,-1,0), blueLight));
+
+    // svetlo
+    scene.AddBody(std::make_unique<Triangle>(Vector3D(4.5,0.9995,-0.25), Vector3D(4.5,0.9995,0.25), Vector3D(4,0.9995,-0.25), whiteLight));
+    scene.AddBody(std::make_unique<Triangle>(Vector3D(4.0,0.9995,0.25), Vector3D(4,0.9995,-0.25), Vector3D(4.5,0.9995,0.25), whiteLight));
+
+    // koule
+    scene.AddBody(std::make_unique<Sphere>(Vector3D(3,-0.75,-0.25), 0.25, mirror));
 
     Camera camera(Vector3D(0,0,0), Vector3D(1,0,0), Vector3D(0,1,0), image_width, image_height, 60);
 
