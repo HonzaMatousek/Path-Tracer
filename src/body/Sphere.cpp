@@ -15,7 +15,7 @@ std::unique_ptr<Intersection> Sphere::Intersect(const Ray &ray) const {
     // if (tca < 0) return false;
     double d2 = L.Dot(L) - tca * tca;
     if (d2 > radius) return nullptr;
-    double thc = std::sqrt(radius - d2);
+    double thc = std::sqrt(radius * radius - d2);
     double t0 = tca - thc;
     double t1 = tca + thc;
 
