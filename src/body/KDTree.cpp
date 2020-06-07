@@ -1,11 +1,20 @@
 #include "KDTree.h"
 
 void KDTree::Intersect(const Ray &ray, Intersection &intersection) const {
-
+    if(ray.IntersectAABB(lowerCorner, upperCorner)) {
+        if(!bodies.empty()) {
+            for(auto body : bodies) {
+                body->Intersect(ray, intersection);
+            }
+            return;
+        }
+        lower->Intersect(ray, intersection);
+        upper->Intersect(ray, intersection);
+    }
 }
 
 KDTree::KDTree(const std::vector<Body*> &bodies, const Vector3D &lowerCorner,
-               const Vector3D &upperCorner) : Body(Material(), lowerCorner, upperCorner), bodies(bodies) {
+               const Vector3D &upperCorner) : Body(Material(), lowerCorner, upperCorner) {
     if(bodies.size() < 2) {
         // no need to construct tree
         this->bodies = bodies;
@@ -19,13 +28,13 @@ KDTree::KDTree(const std::vector<Body*> &bodies, const Vector3D &lowerCorner,
         auto l = body->lowerCorner;
         auto u = body->upperCorner;
         for(auto axis : Vector3D::axes) {
-            double price1 = Price(axis, l.*axis);
+            double price1 = Price(bodies, axis, l.*axis);
             if(price1 < bestPrice) {
                 bestAxis = axis;
                 bestSplit = l.*axis;
                 bestPrice = price1;
             }
-            double price2 = Price(axis, u.*axis);
+            double price2 = Price(bodies, axis, u.*axis);
             if(price2 < bestPrice) {
                 bestAxis = axis;
                 bestSplit = u.*axis;
@@ -57,7 +66,7 @@ KDTree::KDTree(const std::vector<Body*> &bodies, const Vector3D &lowerCorner,
     upper = std::make_unique<KDTree>(upperBodies, lowerCornerSplit, upperCorner);
 }
 
-double KDTree::Price(Vector3D::Axis axis, double splitPosition) const {
+double KDTree::Price(const std::vector<Body*> & bodies, Vector3D::Axis axis, double splitPosition) const {
     auto lowerCornerSplit = lowerCorner;
     lowerCornerSplit.*axis = splitPosition;
     auto upperCornerSplit = upperCorner;

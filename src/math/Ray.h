@@ -11,4 +11,7 @@ public:
 
     [[ nodiscard ]]
     Vector3D Point(double t) const;
+
+    [[ nodiscard ]]
+    bool IntersectAABB(const Vector3D & l, const Vector3D & u) const;
 };

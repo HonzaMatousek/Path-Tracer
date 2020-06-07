@@ -9,7 +9,10 @@ void Scene::AddBody(std::unique_ptr<Body> body) {
 }
 
 void Scene::Intersect(const Ray & ray, Intersection & intersection) const {
-    for(const auto & body : bodies) {
+    if(kdTree) {
+        kdTree->Intersect(ray, intersection);
+    }
+    else for(const auto & body : bodies) {
         body->Intersect(ray, intersection);
     }
 }

@@ -85,9 +85,9 @@ int main() {
     std::uniform_real_distribution d1(-2.0,2.0);
     std::uniform_real_distribution d2(0.0,1.0);
 
-    /*for(int i = 0; i < 20; i++) {
+    for(int i = 0; i < 2000; i++) {
         scene.AddBody(std::make_unique<Sphere>(Vector3D(d1(r) + 10,d1(r),d1(r)*2), d2(r), Material(Color(d2(r),d2(r),d2(r)), Color(d2(r),d2(r),d2(r)))));
-    }*/
+    }
 
     //scene.AddBody(std::make_unique<Triangle>(Vector3D(10,-1,1), Vector3D(10,1,0), Vector3D(10,-1,-1), greenLight));
 
@@ -113,11 +113,11 @@ int main() {
     //scene.AddBody(std::make_unique<Plane>(Vector3D(5,1,-1), Vector3D(0,-1,0), whiteDiffuse));
 
     // svetlo
-    scene.AddBody(std::make_unique<Triangle>(Vector3D(4.5,0.9995,-0.875), Vector3D(4.5,0.9995,0.875), Vector3D(4,0.9995,-0.875), whiteLight));
-    scene.AddBody(std::make_unique<Triangle>(Vector3D(4.0,0.9995,0.875), Vector3D(4,0.9995,-0.875), Vector3D(4.5,0.9995,0.875), whiteLight));
+    //scene.AddBody(std::make_unique<Triangle>(Vector3D(4.5,0.9995,-0.875), Vector3D(4.5,0.9995,0.875), Vector3D(4,0.9995,-0.875), whiteLight));
+    //scene.AddBody(std::make_unique<Triangle>(Vector3D(4.0,0.9995,0.875), Vector3D(4,0.9995,-0.875), Vector3D(4.5,0.9995,0.875), whiteLight));
 
     // koule
-    scene.AddBody(std::make_unique<Sphere>(Vector3D(4.35,-0.55,-0.25), 0.45, beigeDiffuse));
+    //scene.AddBody(std::make_unique<Sphere>(Vector3D(4.35,-0.55,-0.25), 0.45, beigeDiffuse));
 
     //scene.AddBody(std::make_unique<Sphere>(Vector3D(14.35,-0.55,-0.25), 0.45, beigeDiffuse));
 
@@ -138,6 +138,7 @@ int main() {
     auto start = std::chrono::steady_clock::now();
     std::cout << "Using " << std::thread::hardware_concurrency() << " threads." << std::endl;
     scene.Compile();
+    std::cout << "KD tree compiled." << std::endl;
     for(int sample = 0; sample < samples; sample++) {
         std::vector<std::thread> threads;
         threads.reserve(std::thread::hardware_concurrency());
