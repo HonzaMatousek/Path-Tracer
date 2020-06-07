@@ -5,6 +5,7 @@
 class Sphere : public Body {
     Vector3D center;
     double radius;
+    double radiusSquared;
 
 public:
     Sphere(const Vector3D & center, double radius, const Material & material = Material());
