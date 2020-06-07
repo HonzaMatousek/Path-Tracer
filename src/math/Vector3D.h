@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <initializer_list>
 
 class Vector3D {
     bool normalized = false;
@@ -107,7 +108,25 @@ public:
         }
         return *this;
     }
+    
+    [[ nodiscard ]]
+    Vector3D Min(const Vector3D & other) const {
+        return Vector3D(std::min(x, other.x), std::min(y, other.y), std::min(z, other.z));
+    }
+
+    [[ nodiscard ]]
+    Vector3D Max(const Vector3D & other) const {
+        return Vector3D(std::max(x, other.x), std::max(y, other.y), std::max(z, other.z));
+    }
+
+    [[ nodiscard ]]
+    double AABBSurface() const {
+        return x * y + x * z + y * z;
+    }
 
     //static Vector3D Zero();
     //static Vector3D Up();
+
+    using Axis = double Vector3D::*;
+    static const std::initializer_list<Axis> axes;
 };

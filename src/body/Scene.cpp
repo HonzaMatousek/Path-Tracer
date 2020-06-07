@@ -13,3 +13,15 @@ void Scene::Intersect(const Ray & ray, Intersection & intersection) const {
         body->Intersect(ray, intersection);
     }
 }
+
+void Scene::Compile() {
+    std::vector<Body*> treeBodies;
+    Vector3D l(std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity());
+    Vector3D u(-std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity());
+    for(const auto & body : bodies) {
+        treeBodies.push_back(body.get());
+        l = l.Min(body->lowerCorner);
+        u = u.Max(body->upperCorner);
+    }
+    kdTree = std::make_unique<KDTree>(treeBodies, l, u);
+}

@@ -15,7 +15,7 @@
 const int image_width = 640;
 const int image_height = 360;
 const int iteration_limit = 3;
-const int samples = 10;
+const int samples = 100;
 
 class LineEmployer {
     int freeLine = 0;
@@ -94,23 +94,23 @@ int main() {
     // protejsi stena
     //scene.AddBody(std::make_unique<Triangle>(Vector3D(5,-1,1), Vector3D(5,1,-1), Vector3D(5,-1,-1), whiteDiffuse));
     //scene.AddBody(std::make_unique<Triangle>(Vector3D(5,-1,1), Vector3D(5,1,1), Vector3D(5,1,-1), whiteDiffuse));
-    scene.AddBody(std::make_unique<Plane>(Vector3D(5,-1,1), Vector3D(-1,0,0), whiteDiffuse));
+    //scene.AddBody(std::make_unique<Plane>(Vector3D(5,-1,1), Vector3D(-1,0,0), whiteDiffuse));
 
     // leva
     //scene.AddBody(std::make_unique<Triangle>(Vector3D(5,-1,1), Vector3D(0,-1,1), Vector3D(0,1,1), redDiffuse));
     //scene.AddBody(std::make_unique<Triangle>(Vector3D(5,-1,1), Vector3D(0,1,1), Vector3D(5,1,1), redDiffuse));
-    scene.AddBody(std::make_unique<Plane>(Vector3D(5,-1,1), Vector3D(0,0,-1), redDiffuse));
+    //scene.AddBody(std::make_unique<Plane>(Vector3D(5,-1,1), Vector3D(0,0,-1), redDiffuse));
 
     // prava
     //scene.AddBody(std::make_unique<Triangle>(Vector3D(5,-1,-1), Vector3D(0,1,-1), Vector3D(0,-1,-1), greenDiffuse));
     //scene.AddBody(std::make_unique<Triangle>(Vector3D(5,-1,-1), Vector3D(5,1,-1), Vector3D(0,1,-1), greenDiffuse));
-    scene.AddBody(std::make_unique<Plane>(Vector3D(5,-1,-1), Vector3D(0,0,1), greenDiffuse));
+    //scene.AddBody(std::make_unique<Plane>(Vector3D(5,-1,-1), Vector3D(0,0,1), greenDiffuse));
 
     // podlaha
-    scene.AddBody(std::make_unique<Plane>(Vector3D(5,-1,-1), Vector3D(0,1,0), whiteDiffuse));
+    //scene.AddBody(std::make_unique<Plane>(Vector3D(5,-1,-1), Vector3D(0,1,0), whiteDiffuse));
 
     // strop
-    scene.AddBody(std::make_unique<Plane>(Vector3D(5,1,-1), Vector3D(0,-1,0), whiteDiffuse));
+    //scene.AddBody(std::make_unique<Plane>(Vector3D(5,1,-1), Vector3D(0,-1,0), whiteDiffuse));
 
     // svetlo
     scene.AddBody(std::make_unique<Triangle>(Vector3D(4.5,0.9995,-0.875), Vector3D(4.5,0.9995,0.875), Vector3D(4,0.9995,-0.875), whiteLight));
@@ -119,7 +119,13 @@ int main() {
     // koule
     scene.AddBody(std::make_unique<Sphere>(Vector3D(4.35,-0.55,-0.25), 0.45, beigeDiffuse));
 
-    scene.AddBody(std::make_unique<Sphere>(Vector3D(3.625,-0.80,0.25), 0.20, copper));
+    //scene.AddBody(std::make_unique<Sphere>(Vector3D(14.35,-0.55,-0.25), 0.45, beigeDiffuse));
+
+    //scene.AddBody(std::make_unique<Sphere>(Vector3D(24.35,-0.55,-0.25), 0.45, beigeDiffuse));
+
+    //scene.AddBody(std::make_unique<Sphere>(Vector3D(34.35,-0.55,-0.25), 0.45, beigeDiffuse));
+
+    //scene.AddBody(std::make_unique<Sphere>(Vector3D(3.625,-0.80,0.25), 0.20, copper));
 
     //scene.AddBody(std::make_unique<Sphere>(Vector3D(4,0,-1), 1, moltenIron));
     //scene.AddBody(std::make_unique<Sphere>(Vector3D(4,0,1), 0.8, moltenCopper));
@@ -129,7 +135,9 @@ int main() {
 
     ImageJPEG image(image_width, image_height, 75);
 
+    auto start = std::chrono::steady_clock::now();
     std::cout << "Using " << std::thread::hardware_concurrency() << " threads." << std::endl;
+    scene.Compile();
     for(int sample = 0; sample < samples; sample++) {
         std::vector<std::thread> threads;
         threads.reserve(std::thread::hardware_concurrency());
@@ -147,6 +155,8 @@ int main() {
     }
 
     image.Save("image6.jpeg", 0.33 / samples);
+    auto stop = std::chrono::steady_clock::now();
+    std::cout << "Finished, took " << ((stop - start).count() / 1e9) <<  " s." << std::endl;
 
     return 0;
 }
