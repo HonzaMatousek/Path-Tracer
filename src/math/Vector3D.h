@@ -1,6 +1,10 @@
 #pragma once
 
+#include <cmath>
+
 class Vector3D {
+    bool normalized = false;
+    Vector3D(double x, double y, double z, bool n) : normalized(n), x(x), y(y), z(z) {}
 public:
     double x;
     double y;
@@ -9,37 +13,100 @@ public:
     Vector3D(double x, double y, double z) : x(x), y(y), z(z) {}
 
     [[ nodiscard ]]
-    Vector3D   operator +  (const Vector3D & rhs) const;
-    Vector3D & operator += (const Vector3D & rhs);
-    [[ nodiscard ]]
-    Vector3D   operator -  (const Vector3D & rhs) const;
-    Vector3D & operator -= (const Vector3D & rhs);
+    Vector3D   operator +  (const Vector3D & rhs) const {
+        return Vector3D(x + rhs.x, y + rhs.y, z + rhs.z);
+    }
+
+    Vector3D & operator += (const Vector3D & rhs) {
+        x += rhs.x;
+        y += rhs.y;
+        z += rhs.z;
+        normalized = false;
+        return *this;
+    }
 
     [[ nodiscard ]]
-    bool       operator == (const Vector3D & rhs) const;
+    Vector3D   operator -  (const Vector3D & rhs) const {
+        return Vector3D(x - rhs.x, y - rhs.y, z - rhs.z);
+    }
+
+    Vector3D & operator -= (const Vector3D & rhs) {
+        x -= rhs.x;
+        y -= rhs.y;
+        z -= rhs.z;
+        normalized = false;
+        return *this;
+    }
 
     [[ nodiscard ]]
-    bool       operator != (const Vector3D & rhs) const;
+    bool       operator == (const Vector3D & rhs) const {
+        // todo: use epsilon
+        return x == rhs.x && y == rhs.y && z == rhs.z;
+    }
 
     [[ nodiscard ]]
-    Vector3D   operator *  (double scale) const;
-    Vector3D & operator *= (double scale);
-    [[ nodiscard ]]
-    Vector3D   operator /  (double scale) const;
-    Vector3D & operator /= (double scale);
+    bool       operator != (const Vector3D & rhs) const {
+        return !(*this == rhs);
+    }
 
     [[ nodiscard ]]
-    Vector3D   Cross       (const Vector3D & rhs) const;
-    [[ nodiscard ]]
-    double     Dot         (const Vector3D & rhs) const;
+    Vector3D   operator *  (double scale) const {
+        return Vector3D(x * scale, y * scale, z * scale);
+    }
+
+    Vector3D & operator *= (double scale) {
+        x *= scale;
+        y *= scale;
+        z *= scale;
+        normalized = scale == 1 ? normalized : false;
+        return *this;
+    }
 
     [[ nodiscard ]]
-    double     Length() const;
+    Vector3D   operator /  (double scale) const {
+        return Vector3D(x / scale, y / scale, z / scale);
+    }
+
+    Vector3D & operator /= (double scale) {
+        x /= scale;
+        y /= scale;
+        z /= scale;
+        normalized = scale == 1 ? normalized : false;
+        return *this;
+    }
+
     [[ nodiscard ]]
-    double     Square() const;
+    Vector3D   Cross       (const Vector3D & rhs) const {
+        return Vector3D(y * rhs.z - z * rhs.y, z * rhs.x - x * rhs.z, x * rhs.y - y * rhs.x, normalized && rhs.normalized);
+    }
+
     [[ nodiscard ]]
-    double     Distance(const Vector3D & rhs) const;
-    Vector3D & Normalize();
+    double     Dot         (const Vector3D & rhs) const {
+        return x * rhs.x + y * rhs.y + z * rhs.z;
+    }
+
+    [[ nodiscard ]]
+    double     Length() const {
+        return normalized ? 1 : std::sqrt(Square());
+    }
+
+    [[ nodiscard ]]
+    double     Square() const {
+        return normalized ? 1 : Dot(*this);
+    }
+
+    [[ nodiscard ]]
+    double     Distance(const Vector3D & rhs) const {
+        return (rhs - *this).Length();
+    }
+
+    Vector3D & Normalize() {
+        if(!normalized) {
+            *this /= Length();
+            normalized = true;
+        }
+        return *this;
+    }
 
     //static Vector3D Zero();
     //static Vector3D Up();
