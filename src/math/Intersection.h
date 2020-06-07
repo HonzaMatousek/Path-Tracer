@@ -3,6 +3,7 @@
 #include "Vector3D.h"
 #include "Ray.h"
 #include "../material/Material.h"
+#include <random>
 
 class Intersection {
 public:
@@ -15,7 +16,7 @@ public:
     Intersection(const Vector3D & point, const Vector3D & normal, double t, const Material & material);
 
     [[ nodiscard ]]
-    Ray Reflect(const Ray & incoming, double & powerMultiplier);
+    Ray Reflect(const Ray & incoming, double & powerMultiplier, std::mt19937 & generator);
 
     bool operator < (const Intersection & rhs) const;
 

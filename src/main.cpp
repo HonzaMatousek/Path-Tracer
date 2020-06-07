@@ -1,5 +1,7 @@
 #include <iostream>
 #include <random>
+#include <mutex>
+#include <thread>
 
 #include "body/Scene.h"
 #include "body/Sphere.h"
@@ -14,6 +16,46 @@ const int image_width = 640;
 const int image_height = 360;
 const int iteration_limit = 3;
 const int samples = 10;
+
+class LineEmployer {
+    int freeLine = 0;
+    std::mutex freeLineMutex;
+public:
+    int getLine() {
+        std::lock_guard guard(freeLineMutex);
+        return ++freeLine;
+    }
+};
+
+void render(std::mt19937& generator, const Camera & camera, const Scene & scene, Image & image, LineEmployer & lineEmployer) {
+    std::uniform_real_distribution<double> d(-0.5,0.5);
+    for (int y = lineEmployer.getLine(); y < image_height; y = lineEmployer.getLine()) {
+        for (int x = 0; x < image_width; x++) {
+            double cam_x = d(generator);
+            double cam_y = d(generator);
+            Ray ray = camera.Project(x + d(generator), y + d(generator));
+            //Ray ray = camera.Project(x, y);
+            Color albedoMultiplier(1, 1, 1);
+            albedoMultiplier *= 1 - std::abs(cam_x) - std::abs(cam_y);
+            for (int i = 0; i < iteration_limit; i++) {
+                Intersection intersection;
+                scene.Intersect(ray, intersection);
+                if (intersection) {
+                    image.AddPixel(x, y, intersection.material.emissive * albedoMultiplier);
+                    albedoMultiplier *= intersection.material.albedo;
+                    if (albedoMultiplier == Color()) {
+                        break;
+                    }
+                    double power = 1;
+                    ray = intersection.Reflect(ray, power, generator);
+                    albedoMultiplier *= power;
+                } else {
+                    break;
+                }
+            }
+        }
+    }
+}
 
 int main() {
     Material greenLight(Color(0,100,0), Color(0,0,0));
@@ -87,33 +129,16 @@ int main() {
 
     ImageJPEG image(image_width, image_height, 75);
 
-    std::uniform_real_distribution<double> d(-0.5,0.5);
+    std::cout << "Using " << std::thread::hardware_concurrency() << " threads." << std::endl;
     for(int sample = 0; sample < samples; sample++) {
-        for (int y = 0; y < image_height; y++) {
-            for (int x = 0; x < image_width; x++) {
-                double cam_x = d(generator);
-                double cam_y = d(generator);
-                Ray ray = camera.Project(x + d(generator), y + d(generator));
-                //Ray ray = camera.Project(x, y);
-                Color albedoMultiplier(1, 1, 1);
-                albedoMultiplier *= 1 - std::abs(cam_x) - std::abs(cam_y);
-                for (int i = 0; i < iteration_limit; i++) {
-                    Intersection intersection;
-                    scene.Intersect(ray, intersection);
-                    if (intersection) {
-                        image.AddPixel(x, y, intersection.material.emissive * albedoMultiplier);
-                        albedoMultiplier *= intersection.material.albedo;
-                        if (albedoMultiplier == Color()) {
-                            break;
-                        }
-                        double power = 1;
-                        ray = intersection.Reflect(ray, power);
-                        albedoMultiplier *= power;
-                    } else {
-                        break;
-                    }
-                }
-            }
+        std::vector<std::thread> threads;
+        threads.reserve(std::thread::hardware_concurrency());
+        LineEmployer lineEmployer;
+        for(int i = 0; i < std::thread::hardware_concurrency(); ++i) {
+            threads.emplace_back(std::thread(render, std::ref(generator), std::ref(camera), std::ref(scene), std::ref(image), std::ref(lineEmployer)));
+        }
+        for(auto & thread : threads) {
+            thread.join();
         }
         std::cout << sample << "/" << samples << std::endl;
         if(sample % 100 == 99) {

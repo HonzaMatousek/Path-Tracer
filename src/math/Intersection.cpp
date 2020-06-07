@@ -1,13 +1,11 @@
 #include <random>
 #include "Intersection.h"
 
-inline std::mt19937 generator;
-
 Intersection::Intersection(const Vector3D &point, const Vector3D &normal, double t, const Material & material) : point(point), normal(normal), t(t), material(material) {
     this->normal.Normalize();
 }
 
-Ray Intersection::Reflect(const Ray &incoming, double& powerMultiplier) {
+Ray Intersection::Reflect(const Ray &incoming, double& powerMultiplier, std::mt19937 & generator) {
     Vector3D idealReflection = incoming.direction - normal * (2 * incoming.direction.Dot(normal));
     if(material.reflective) {
         return Ray(point, idealReflection);
