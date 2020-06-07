@@ -6,7 +6,7 @@
 
 Triangle::Triangle(const Vector3D &a, const Vector3D &b, const Vector3D &c, const Material &material) : Body(material), a(a), b(b), c(c), u(b - a), v(c - a), normal(u.Cross(v)) {}
 
-std::unique_ptr<Intersection> Triangle::Intersect(const Ray &ray) const {
+void Triangle::Intersect(const Ray & ray, Intersection & intersection) const {
     double denominator = normal.Dot(ray.direction);
     if (denominator < -0.00000000001f) // your favorite epsilon
     {
@@ -29,9 +29,8 @@ std::unique_ptr<Intersection> Triangle::Intersect(const Ray &ray) const {
                 _u = (point_diff.x * v.y - point_diff.y * v.x) / (u.x * v.y - u.y * v.x);
                 _v = (u.x * point_diff.y - u.y * point_diff.x) / (u.x * v.y - u.y * v.x);
             }
-            if(_u < 0 || _v < 0 || _v + _u > 1) return nullptr;
-            return std::make_unique<Intersection>(point, normal, t, material);
+            if(_u < 0 || _v < 0 || _v + _u > 1) return;
+            intersection.ChooseCloser(Intersection(point, normal, t, material));
         }
     }
-    return nullptr;
 }

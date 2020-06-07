@@ -3,7 +3,7 @@
 
 Sphere::Sphere(const Vector3D &center, double radius, const Material & material) : Body(material), center(center), radius(radius) {}
 
-std::unique_ptr<Intersection> Sphere::Intersect(const Ray &ray) const {
+void Sphere::Intersect(const Ray & ray, Intersection & intersection) const {
     // (x-cx)^2 + (y-cy)^2 + (z-cz)^2 = r^2
     // (x,y,z)
 
@@ -14,7 +14,7 @@ std::unique_ptr<Intersection> Sphere::Intersect(const Ray &ray) const {
     double tca = L.Dot(ray.direction);
     // if (tca < 0) return false;
     double d2 = L.Dot(L) - tca * tca;
-    if (d2 > radius) return nullptr;
+    if (d2 > radius) return;
     double thc = std::sqrt(radius * radius - d2);
     double t0 = tca - thc;
     double t1 = tca + thc;
@@ -23,13 +23,11 @@ std::unique_ptr<Intersection> Sphere::Intersect(const Ray &ray) const {
 
     if (t0 >= 0) {
         Vector3D point = ray.Point(t0);
-        return std::make_unique<Intersection>(point, point - center, t0, material);
+        intersection.ChooseCloser(Intersection(point, point - center, t0, material));
     }
 
     /*if (t1 >= 0) {
         Vector3D point = ray.Point(t1);
         return std::make_unique<Intersection>(point, point - center, t1, material);
     }*/
-
-    return nullptr;
 }

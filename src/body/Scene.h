@@ -11,6 +11,5 @@ public:
 
     void AddBody(std::unique_ptr<Body> body);
 
-    [[ nodiscard ]]
-    std::unique_ptr<Intersection> Intersect(const Ray &ray) const override;
+    void Intersect(const Ray & ray, Intersection & intersection) const override;
 };

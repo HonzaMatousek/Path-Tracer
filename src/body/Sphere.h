@@ -10,6 +10,5 @@ public:
     Sphere(const Vector3D & center, double radius, const Material & material = Material());
     ~Sphere() override = default;
 
-    [[ nodiscard ]]
-    std::unique_ptr<Intersection> Intersect(const Ray &ray) const override;
+    void Intersect(const Ray & ray, Intersection & intersection) const override;
 };

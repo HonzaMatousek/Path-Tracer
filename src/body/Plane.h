@@ -9,6 +9,5 @@ public:
     Plane(const Vector3D & origin, const Vector3D & normal, const Material & material = Material());
     ~Plane() override = default;
 
-    [[ nodiscard ]]
-    std::unique_ptr<Intersection> Intersect(const Ray &ray) const override;
+    void Intersect(const Ray & ray, Intersection & intersection) const override;
 };

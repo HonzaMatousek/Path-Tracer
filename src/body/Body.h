@@ -13,6 +13,5 @@ public:
     explicit Body(const Material & material = Material()) : material(material) {}
     virtual ~Body() = default;
 
-    [[ nodiscard ]]
-    virtual std::unique_ptr<Intersection> Intersect(const Ray & ray) const = 0;
+    virtual void Intersect(const Ray & ray, Intersection & intersection) const = 0;
 };
