@@ -1,7 +1,7 @@
 #include <random>
 #include "Intersection.h"
 
-std::mt19937 generator;
+inline std::mt19937 generator;
 
 Intersection::Intersection(const Vector3D &point, const Vector3D &normal, double t, const Material & material) : point(point), normal(normal), t(t), material(material) {
     this->normal.Normalize();
@@ -13,9 +13,22 @@ Ray Intersection::Reflect(const Ray &incoming, double& powerMultiplier) {
         return Ray(point, idealReflection);
     }
     else {
-        std::uniform_real_distribution<double> d(-1.0,1.0);
-        Vector3D randomDirection = Vector3D(d(generator), d(generator), d(generator));
-        if(randomDirection.Dot(normal) < 0) {
+        std::uniform_real_distribution<double> d(0.0,1.0);
+        double u = d(generator);
+        double v = d(generator);
+        double sin_th = sin(2 * M_PI * u);
+        double cos_ph = 2 *  v - 1;
+        // th = 2 * pi * u
+        // phi = arccos (2 * v - 1)
+        // x = sin th * cos phi
+        // y = sin th * sin phi
+        // z = cos th
+        Vector3D randomDirection = Vector3D(
+                sin_th * cos_ph,
+                sin_th * sqrt(1 - cos_ph * cos_ph),
+                sqrt(1 - sin_th * sin_th)
+        );
+        if (randomDirection.Dot(normal) < 0) {
             randomDirection *= -1;
         }
         powerMultiplier *= (randomDirection.Dot(incoming.direction) + 1) / 2;
