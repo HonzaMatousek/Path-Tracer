@@ -31,7 +31,7 @@ Ray Intersection::Reflect(const Ray &incoming, double& powerMultiplier) {
         if (randomDirection.Dot(normal) < 0) {
             randomDirection *= -1;
         }
-        powerMultiplier *= (randomDirection.Dot(incoming.direction) + 1) / 2;
+        powerMultiplier *= randomDirection.Dot(normal);
         return Ray(point, randomDirection);
     }
 }
