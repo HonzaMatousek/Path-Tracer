@@ -1,4 +1,10 @@
+#include <map>
 #include "KDTree.h"
+
+struct SplittingInfo {
+    size_t lowerChange = 0;
+    size_t upperChange = 0;
+};
 
 void KDTree::Intersect(const Ray &ray, Intersection &intersection) const {
     if(ray.IntersectAABB(lowerCorner, upperCorner)) {
@@ -24,22 +30,23 @@ KDTree::KDTree(const std::vector<Body*> &bodies, const Vector3D &lowerCorner,
     double bestPrice = (upperCorner - lowerCorner).AABBSurface() * bodies.size();
     Vector3D::Axis bestAxis = &Vector3D::x;
     double bestSplit = 0;
-    for(auto & body : bodies) {
-        auto l = body->lowerCorner;
-        auto u = body->upperCorner;
-        for(auto axis : Vector3D::axes) {
-            double price1 = Price(bodies, axis, l.*axis);
-            if(price1 < bestPrice) {
+    for(auto axis : Vector3D::axes) {
+        std::map<double, SplittingInfo> splittingInfos;
+        for (auto &body : bodies) {
+            splittingInfos[body->lowerCorner.*axis].lowerChange += 1;
+            splittingInfos[body->upperCorner.*axis].upperChange += 1;
+        }
+        size_t lowerCount = 0;
+        size_t upperCount = bodies.size();
+        for (auto & [ split, splittingInfo ] : splittingInfos) {
+            lowerCount += splittingInfo.lowerChange;
+            double price = Price(bodies, axis, split, lowerCount, upperCount);
+            if(price < bestPrice) {
                 bestAxis = axis;
-                bestSplit = l.*axis;
-                bestPrice = price1;
+                bestSplit = split;
+                bestPrice = price;
             }
-            double price2 = Price(bodies, axis, u.*axis);
-            if(price2 < bestPrice) {
-                bestAxis = axis;
-                bestSplit = u.*axis;
-                bestPrice = price2;
-            }
+            upperCount -= splittingInfo.upperChange;
         }
     }
     //
@@ -66,20 +73,10 @@ KDTree::KDTree(const std::vector<Body*> &bodies, const Vector3D &lowerCorner,
     upper = std::make_unique<KDTree>(upperBodies, lowerCornerSplit, upperCorner);
 }
 
-double KDTree::Price(const std::vector<Body*> & bodies, Vector3D::Axis axis, double splitPosition) const {
+double KDTree::Price(const std::vector<Body*> & bodies, Vector3D::Axis axis, double splitPosition, size_t lowerCount, size_t upperCount) const {
     auto lowerCornerSplit = lowerCorner;
     lowerCornerSplit.*axis = splitPosition;
     auto upperCornerSplit = upperCorner;
     upperCornerSplit.*axis = splitPosition;
-    size_t lowerCount = 0;
-    size_t upperCount = 0;
-    for(auto & body : bodies) {
-        if(body->IntersectAABB(lowerCorner, upperCornerSplit)) {
-            lowerCount++;
-        }
-        if(body->IntersectAABB(lowerCornerSplit, upperCorner)) {
-            upperCount++;
-        }
-    }
     return lowerCount * (upperCornerSplit - lowerCorner).AABBSurface() + upperCount * (upperCorner - lowerCornerSplit).AABBSurface();
 }
