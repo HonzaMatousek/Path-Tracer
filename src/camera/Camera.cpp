@@ -6,9 +6,9 @@
 
 #include <cmath>
 
-Camera::Camera(Vector3D eye, Vector3D direction, Vector3D up, int width, int height, double fov) : eye(eye), direction(direction), up(up), right(direction.Cross(up)), width(width), height(height), fov(fov)  {
+Camera::Camera(Vector3D eye, Vector3D direction, Vector3D up, int width, int height, double fov) : eye(eye), direction(direction), up(up), left(up.Cross(direction)), width(width), height(height), fov(fov)  {
     this->up.Normalize() *= height;
-    this->right.Normalize() *= width;
+    this->left.Normalize() *= width;
     this->direction.Normalize() *= width;
     this->direction /= std::tan(fov * M_PI / 360);
 }
@@ -22,5 +22,5 @@ Ray Camera::Project(double w, double h) const {
     double wp = 1 - (w / width) * 2;
     double hp = 1 - (h / height) * 2;
 
-    return Ray(eye, up * hp + right * wp + direction);
+    return Ray(eye, up * hp + left * wp + direction);
 }

@@ -7,7 +7,7 @@ class Camera {
     Vector3D eye;
     Vector3D direction;
     Vector3D up;
-    Vector3D right;
+    Vector3D left;
     int width;
     int height;
     double fov;
