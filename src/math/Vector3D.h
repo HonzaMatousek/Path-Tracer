@@ -5,7 +5,7 @@
 
 class Vector3D {
     bool normalized = false;
-    Vector3D(double x, double y, double z, bool n) : normalized(n), x(x), y(y), z(z) {}
+    //Vector3D(double x, double y, double z, bool n) : normalized(n), x(x), y(y), z(z) {}
 public:
     double x;
     double y;
@@ -78,7 +78,7 @@ public:
 
     [[ nodiscard ]]
     Vector3D   Cross       (const Vector3D & rhs) const {
-        return Vector3D(y * rhs.z - z * rhs.y, z * rhs.x - x * rhs.z, x * rhs.y - y * rhs.x, normalized && rhs.normalized);
+        return Vector3D(y * rhs.z - z * rhs.y, z * rhs.x - x * rhs.z, x * rhs.y - y * rhs.x);
     }
 
     [[ nodiscard ]]
@@ -129,4 +129,10 @@ public:
 
     using Axis = double Vector3D::*;
     static const std::initializer_list<Axis> axes;
+};
+
+inline const std::initializer_list<Vector3D::Axis> Vector3D::axes = {
+        &Vector3D::x,
+        &Vector3D::y,
+        &Vector3D::z,
 };
