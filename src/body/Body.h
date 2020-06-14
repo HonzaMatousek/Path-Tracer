@@ -38,4 +38,8 @@ public:
     Vector3D GetNormal(const Vector3D & localCoordinates) const {
         return normalInterpolator->Interpolate(localCoordinates);
     }
+
+    void SetInterpolator(std::unique_ptr<Interpolator<Vector3D>> && normalInterpolator) {
+        this->normalInterpolator.swap(normalInterpolator);
+    }
 };

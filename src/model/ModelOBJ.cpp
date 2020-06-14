@@ -14,11 +14,19 @@ const Vector3D & findIndex(std::vector<Vector3D> & vertices, int index) {
     }
 }
 
-void readFaceVertex(std::istream & is, int & vIndex) {
+void readFaceVertex(std::istream & is, int & vIndex, int & vtIndex, int & vnIndex) {
     is >> vIndex;
+    vtIndex = 0;
+    vnIndex = 0;
     if(is.peek() == '/') {
-        std::string waste;
-        is >> waste;
+        is.ignore(1);
+        if(is.peek() != '/') {
+            is >> vtIndex;
+        }
+        if(is.peek() == '/') {
+            is.ignore(1);
+            is >> vnIndex;
+        }
     }
 }
 
@@ -34,6 +42,8 @@ void ModelOBJ::Import(const std::string &fileName, Scene &scene) {
     std::ifstream file(fileName);
     std::string line;
     std::vector<Vector3D> vertices; // vertex - vertices
+    std::vector<Vector3D> verticesTexture; // vertex - vertices
+    std::vector<Vector3D> verticesNormal; // vertex - vertices
     double lowest = 10000;
     while(std::getline(file, line)) {
         std::string command;
@@ -45,12 +55,29 @@ void ModelOBJ::Import(const std::string &fileName, Scene &scene) {
             vertices.emplace_back(Vector3D(x, y, z));
             lowest = std::min(lowest, y);
         }
+        if(command == "vt") {
+            double x, y, z;
+            lineStream >> x >> y >> z;
+            verticesTexture.emplace_back(Vector3D(x, y, z));
+            lowest = std::min(lowest, y);
+        }
+        if(command == "vn") {
+            double x, y, z;
+            lineStream >> x >> y >> z;
+            verticesNormal.emplace_back(Vector3D(x, y, z));
+            lowest = std::min(lowest, y);
+        }
         else if(command == "f") {
-            int a, b, c;
-            readFaceVertex(lineStream, a);
-            readFaceVertex(lineStream, b);
-            readFaceVertex(lineStream, c);
+            int a, b, c, at, bt, ct, an, bn, cn;
+            readFaceVertex(lineStream, a, at, an);
+            readFaceVertex(lineStream, b, bt, bn);
+            readFaceVertex(lineStream, c, ct, cn);
             auto triangle = std::make_unique<Triangle>(findIndex(vertices, a), findIndex(vertices, b), findIndex(vertices, c), current_mat == "mat_pi4c75f579" ? beigeDiffuse : chromium);
+            if(an && bn && cn) {
+                triangle->SetInterpolator(std::make_unique<TriangleInterpolator<Vector3D>>(
+                        findIndex(verticesNormal, an), findIndex(verticesNormal, bn), findIndex(verticesNormal, cn)
+                ));
+            }
             scene.AddBody(std::move(triangle));
             //scene.AddBody(std::make_unique<Triangle>(findIndex(vertices, a), findIndex(vertices, b), findIndex(vertices, c), beigeDiffuse));
         }

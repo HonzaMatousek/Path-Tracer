@@ -22,8 +22,8 @@ void Triangle::Intersect(const Ray & ray, Intersection & intersection) const {
             Vector3D w = point - a;
             double dotVW = v.Dot(w);
             double dotUW = u.Dot(w);
-            double _u = (dotUU * dotVW - dotUV * dotUW) * invDenom;
-            double _v = (dotVV * dotUW - dotUV * dotVW) * invDenom;
+            double _v = (dotUU * dotVW - dotUV * dotUW) * invDenom;
+            double _u = (dotVV * dotUW - dotUV * dotVW) * invDenom;
             if(_u < 0 || _v < 0 || _v + _u > 1) return;
             intersection.ChooseCloser(Intersection(t, this, Vector3D(_u, _v, 0)));
         }
