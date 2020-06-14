@@ -8,7 +8,7 @@ class Scene : public Body {
     std::vector<std::unique_ptr<Body>> bodies;
     std::unique_ptr<Body> kdTree;
 public:
-    Scene() = default;
+    Scene();
     ~Scene() override = default;
 
     void AddBody(std::unique_ptr<Body> body);

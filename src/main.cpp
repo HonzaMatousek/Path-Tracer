@@ -29,7 +29,7 @@ public:
     }
 };
 
-void render(std::mt19937& generator, const Camera & camera, const Scene & scene, Image & image, Image & bg, LineEmployer & lineEmployer) {
+void render(std::mt19937& generator, const Camera & camera, const Scene & scene, Image & image, LineEmployer & lineEmployer) {
     std::uniform_real_distribution<double> d(-0.5,0.5);
     for (int y = lineEmployer.getLine(); y < image_height; y = lineEmployer.getLine()) {
         for (int x = 0; x < image_width; x++) {
@@ -40,24 +40,17 @@ void render(std::mt19937& generator, const Camera & camera, const Scene & scene,
             Color albedoMultiplier(1, 1, 1);
             albedoMultiplier *= 1 - std::abs(cam_x * cam_y);
             for (int i = 0; i < iteration_limit; i++) {
-                Intersection intersection;
+                Intersection intersection(&scene, ray);
                 scene.Intersect(ray, intersection);
-                if (intersection) {
-                    auto material = intersection.GetMaterial();
-                    image.AddPixel(x, y, material.emissive * albedoMultiplier);
-                    albedoMultiplier *= material.albedo;
-                    if (albedoMultiplier == Color()) {
-                        break;
-                    }
-                    double power = 1;
-                    ray = intersection.Reflect(ray, power, generator);
-                    albedoMultiplier *= power;
-                } else {
-                    double bg_y = acos(ray.direction.y) / M_PI;
-                    double bg_x = atan2(ray.direction.z, ray.direction.x) / 2 / M_PI + 0.5;
-                    image.AddPixel(x, y, bg.GetPixel(bg_x, bg_y) * albedoMultiplier);
+                auto material = intersection.GetMaterial();
+                image.AddPixel(x, y, material.emissive * albedoMultiplier);
+                albedoMultiplier *= material.albedo;
+                if (albedoMultiplier == Color()) {
                     break;
                 }
+                double power = 1;
+                ray = intersection.Reflect(ray, power, generator);
+                albedoMultiplier *= power;
             }
         }
     }
@@ -187,7 +180,15 @@ int main() {
     Camera camera(Vector3D(0,1,4), Vector3D(0,0,-1), Vector3D(0,1,0), image_width, image_height, 60);
 
     ImageJPEG image(image_width, image_height, 75);
-    ImageJPEG bg("../sky.jpg", 0.1, 75);
+    std::shared_ptr<Image> bg(new ImageJPEG("../sky.jpg", 0.1, 75));
+    //scene.SetMaterialInterpolator(std::make_unique<FlatInterpolator<Material>>(Material(Color(1,0,0), Color(), false)));
+    scene.SetMaterialInterpolator(
+            std::make_unique<TextureInterpolator>(std::make_unique<SpherePolarInterpolator>(),
+                                                  bg,
+                                                  nullptr,
+                                                  false
+            )
+    );
 
     auto start = std::chrono::steady_clock::now();
     std::cout << "Compiling KD tree..." << std::endl;
@@ -204,7 +205,7 @@ int main() {
         threads.reserve(std::thread::hardware_concurrency());
         LineEmployer lineEmployer;
         for(int i = 0; i < std::thread::hardware_concurrency(); ++i) {
-            threads.emplace_back(std::thread(render, std::ref(generator), std::ref(camera), std::ref(scene), std::ref(image), std::ref(bg), std::ref(lineEmployer)));
+            threads.emplace_back(std::thread(render, std::ref(generator), std::ref(camera), std::ref(scene), std::ref(image), std::ref(lineEmployer)));
         }
         for(auto & thread : threads) {
             thread.join();

@@ -13,7 +13,7 @@ public:
     const Body * body;
     Vector3D localCoordinates;
 
-    Intersection() : t(std::numeric_limits<double>::infinity()), body(nullptr), localCoordinates(0,0,0) {}
+    Intersection(const Body * body, const Ray & ray) : t(std::numeric_limits<double>::infinity()), body(body), localCoordinates(ray.direction) {}
     Intersection(double t, const Body * body, Vector3D&& localCoordinates) : t(t), body(body), localCoordinates(localCoordinates) {}
 
     [[ nodiscard ]]

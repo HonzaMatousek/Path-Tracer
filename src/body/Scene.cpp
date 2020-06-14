@@ -28,3 +28,5 @@ void Scene::Compile() {
     }
     kdTree = std::make_unique<KDTree>(treeBodies, l, u);
 }
+
+Scene::Scene() : Body(std::make_unique<FlatInterpolator<Material>>(Material())) {}
