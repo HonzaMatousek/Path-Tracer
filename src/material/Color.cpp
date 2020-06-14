@@ -1,5 +1,6 @@
 #include "Color.h"
 #include <algorithm>
+#include <cmath>
 
 Color Color::operator+(const Color & rhs) const {
     return Color(r + rhs.r, g + rhs.g, b + rhs.b);
@@ -78,7 +79,14 @@ Color &Color::operator/=(const Color & rhs) {
 
 void Color::WriteIntoByteBufferRGB(unsigned char *buffer, double exposition) const {
     // use physically correct exposition (Reinhard's tone mapping?)
-    buffer[0] = (unsigned char)std::clamp<double>(r * 255 * exposition, 0, 255);
-    buffer[1] = (unsigned char)std::clamp<double>(g * 255 * exposition, 0, 255);
-    buffer[2] = (unsigned char)std::clamp<double>(b * 255 * exposition, 0, 255);
+    buffer[0] = (unsigned char)std::clamp<double>(pow(r * exposition, 1/2.2) * 255, 0, 255);
+    buffer[1] = (unsigned char)std::clamp<double>(pow(g * exposition, 1/2.2) * 255, 0, 255);
+    buffer[2] = (unsigned char)std::clamp<double>(pow(b * exposition, 1/2.2) * 255, 0, 255);
+}
+
+void Color::WriteIntoByteBufferBGR(unsigned char *buffer, double exposition) const {
+    // use physically correct exposition (Reinhard's tone mapping?)
+    buffer[2] = (unsigned char)std::clamp<double>(pow(r * exposition, 1/2.2) * 255, 0, 255);
+    buffer[1] = (unsigned char)std::clamp<double>(pow(g * exposition, 1/2.2) * 255, 0, 255);
+    buffer[0] = (unsigned char)std::clamp<double>(pow(b * exposition, 1/2.2) * 255, 0, 255);
 }

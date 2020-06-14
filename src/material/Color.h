@@ -37,4 +37,5 @@ public:
     Color & operator /= (const Color & rhs);
 
     void WriteIntoByteBufferRGB(unsigned char * buffer, double exposition) const;
+    void WriteIntoByteBufferBGR(unsigned char * buffer, double exposition) const;
 };
