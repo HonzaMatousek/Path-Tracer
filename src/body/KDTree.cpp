@@ -7,15 +7,9 @@ struct SplittingInfo {
 };
 
 void KDTree::Intersect(const Ray &ray, Intersection &intersection) const {
-    if(ray.IntersectAABB(lowerCorner, upperCorner)) {
-        if(!bodies.empty()) {
-            for(auto body : bodies) {
-                body->Intersect(ray, intersection);
-            }
-            return;
-        }
-        lower->Intersect(ray, intersection);
-        upper->Intersect(ray, intersection);
+    double tl, tu;
+    if(ray.IntersectAABB(lowerCorner, upperCorner, tl, tu)) {
+        Intersect(ray, intersection, tl, tu);
     }
 }
 
@@ -69,6 +63,7 @@ KDTree::KDTree(const std::vector<Body*> &bodies, const Vector3D &lowerCorner,
             upperBodies.push_back(body);
         }
     }
+    splitAxis = bestAxis;
     lower = std::make_unique<KDTree>(lowerBodies, lowerCorner, upperCornerSplit);
     upper = std::make_unique<KDTree>(upperBodies, lowerCornerSplit, upperCorner);
 }
@@ -79,4 +74,21 @@ double KDTree::Price(const std::vector<Body*> & bodies, Vector3D::Axis axis, dou
     auto upperCornerSplit = upperCorner;
     upperCornerSplit.*axis = splitPosition;
     return lowerCount * (upperCornerSplit - lowerCorner).AABBSurface() + upperCount * (upperCorner - lowerCornerSplit).AABBSurface();
+}
+
+void KDTree::Intersect(const Ray &ray, Intersection &intersection, double t1, double t2) const {
+    if(!lower) {
+        for(auto body : bodies) {
+            body->Intersect(ray, intersection);
+        }
+        return;
+    }
+    double ts = (lower->upperCorner.*splitAxis - ray.origin.*splitAxis) / ray.direction.*splitAxis;
+    if(ts > t1) {
+        (ray.direction.*splitAxis > 0 ? lower : upper)->Intersect(ray, intersection, t1, std::min(ts, t2));
+    }
+    if(intersection.t <= ts) return; // do not visit further node if we have closer intersection
+    if(ts < t2) {
+        (ray.direction.*splitAxis > 0 ? upper : lower)->Intersect(ray, intersection, std::max(ts, t1), t2);
+    }
 }
