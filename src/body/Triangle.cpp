@@ -5,6 +5,7 @@
 #include "Triangle.h"
 
 Triangle::Triangle(const Vector3D &a, const Vector3D &b, const Vector3D &c, const Material &material) : Body(material, a.Min(b).Min(c), a.Max(b).Max(c)), a(a), b(b), c(c), u(b - a), v(c - a), normal(u.Cross(v)) {
+    this->normal.Normalize();
     dotUU = u.Dot(u);
     dotUV = u.Dot(v);
     dotVV = v.Dot(v);
@@ -24,7 +25,7 @@ void Triangle::Intersect(const Ray & ray, Intersection & intersection) const {
             double _u = (dotUU * dotVW - dotUV * dotUW) * invDenom;
             double _v = (dotVV * dotUW - dotUV * dotVW) * invDenom;
             if(_u < 0 || _v < 0 || _v + _u > 1) return;
-            intersection.ChooseCloser(Intersection(point, normal, t, material));
+            intersection.ChooseCloser(Intersection(t, this, Vector3D(_u, _v, 0)));
         }
     }
 }

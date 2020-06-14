@@ -5,15 +5,16 @@
 #include "../material/Material.h"
 #include <random>
 
+class Body;
+
 class Intersection {
 public:
-    Vector3D point;
-    Vector3D normal;
     double t;
-    Material material;
+    const Body * body;
+    Vector3D localCoordinates;
 
-    Intersection() : point(0, 0, 0), normal(0, 0, 0), t(std::numeric_limits<double>::infinity()), material() {}
-    Intersection(const Vector3D & point, const Vector3D & normal, double t, const Material & material);
+    Intersection() : t(std::numeric_limits<double>::infinity()), body(nullptr), localCoordinates(0,0,0) {}
+    Intersection(double t, const Body * body, Vector3D&& localCoordinates) : t(t), body(body), localCoordinates(localCoordinates) {}
 
     [[ nodiscard ]]
     Ray Reflect(const Ray & incoming, double & powerMultiplier, std::mt19937 & generator);
@@ -29,4 +30,10 @@ public:
     operator bool () const {
         return t < std::numeric_limits<double>::infinity();
     }
+
+    [[ nodiscard ]]
+    Material GetMaterial() const;
+
+    [[ nodiscard ]]
+    Vector3D GetNormal() const;
 };

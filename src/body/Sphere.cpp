@@ -23,7 +23,7 @@ void Sphere::Intersect(const Ray & ray, Intersection & intersection) const {
 
     if (t0 >= 0) {
         Vector3D point = ray.Point(t0);
-        intersection.ChooseCloser(Intersection(point, point - center, t0, material));
+        intersection.ChooseCloser(Intersection(t0, this, point - center));
     }
 
     /*if (t1 >= 0) {

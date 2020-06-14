@@ -26,4 +26,14 @@ public:
         }
         return true;
     }
+
+    [[ nodiscard ]]
+    virtual Material GetMaterial(const Vector3D & localCoordinates) const {
+        return material;
+    }
+
+    [[ nodiscard ]]
+    virtual Vector3D GetNormal(const Vector3D & localCoordinates) const {
+        return Vector3D(0, 0, 0);
+    }
 };

@@ -43,8 +43,9 @@ void render(std::mt19937& generator, const Camera & camera, const Scene & scene,
                 Intersection intersection;
                 scene.Intersect(ray, intersection);
                 if (intersection) {
-                    image.AddPixel(x, y, intersection.material.emissive * albedoMultiplier);
-                    albedoMultiplier *= intersection.material.albedo;
+                    auto material = intersection.GetMaterial();
+                    image.AddPixel(x, y, material.emissive * albedoMultiplier);
+                    albedoMultiplier *= material.albedo;
                     if (albedoMultiplier == Color()) {
                         break;
                     }

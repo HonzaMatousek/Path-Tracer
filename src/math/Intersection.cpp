@@ -1,9 +1,6 @@
 #include <random>
 #include "Intersection.h"
-
-Intersection::Intersection(const Vector3D &point, const Vector3D &normal, double t, const Material &material) : point(point), normal(normal), t(t), material(material) {
-    this->normal.Normalize();
-}
+#include "../body/Body.h"
 
 Vector3D RandomDirection(const Vector3D & usualDirection, std::mt19937 & generator) {
     // generate random variables
@@ -41,13 +38,23 @@ Vector3D RandomDirection(const Vector3D & usualDirection, std::mt19937 & generat
 }
 
 Ray Intersection::Reflect(const Ray &incoming, double& powerMultiplier, std::mt19937 & generator) {
+    auto normal = GetNormal();
+    auto material = GetMaterial();
     Vector3D idealReflection = incoming.direction - normal * (2 * incoming.direction.Dot(normal));
     if(material.reflective) {
-        return Ray(point, idealReflection);
+        return Ray(incoming.Point(t), idealReflection);
     }
     else {
         auto randomDirection = RandomDirection(normal, generator);
         powerMultiplier *= randomDirection.Dot(normal);
-        return Ray(point, randomDirection);
+        return Ray(incoming.Point(t), randomDirection);
     }
+}
+
+Material Intersection::GetMaterial() const {
+    return body->GetMaterial(localCoordinates);
+}
+
+Vector3D Intersection::GetNormal() const {
+    return body->GetNormal(localCoordinates);
 }

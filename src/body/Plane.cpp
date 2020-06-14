@@ -9,7 +9,7 @@ void Plane::Intersect(const Ray & ray, Intersection & intersection) const {
         double t = (origin - ray.origin).Dot(normal) / denominator;
         if (t >= 0) {
             Vector3D point = ray.Point(t);
-            intersection.ChooseCloser(Intersection(point, normal, t, material));
+            intersection.ChooseCloser(Intersection(t, this, Vector3D(0, 0, 0)));
         }
     }
 }
