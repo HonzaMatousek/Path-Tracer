@@ -81,8 +81,9 @@ class TextureInterpolator : public Interpolator<Material> {
     std::shared_ptr<Image> emissionTexture;
     std::shared_ptr<Image> albedoTexture;
     bool reflective;
+    double roughness;
 public:
-    TextureInterpolator(std::unique_ptr<Interpolator<Vector3D>> && base, const std::shared_ptr<Image> & emissionTexture, const std::shared_ptr<Image> & albedoTexture, bool reflective) : base(std::move(base)), emissionTexture(emissionTexture), albedoTexture(albedoTexture), reflective(reflective) {}
+    TextureInterpolator(std::unique_ptr<Interpolator<Vector3D>> && base, const std::shared_ptr<Image> & emissionTexture, const std::shared_ptr<Image> & albedoTexture, bool reflective, double roughness) : base(std::move(base)), emissionTexture(emissionTexture), albedoTexture(albedoTexture), reflective(reflective), roughness(roughness) {}
 
     [[ nodiscard ]]
     Material Interpolate(const Vector3D & coordinates) const override {

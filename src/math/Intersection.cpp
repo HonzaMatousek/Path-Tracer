@@ -2,20 +2,20 @@
 #include "Intersection.h"
 #include "../body/Body.h"
 
-Vector3D RandomDirection(const Vector3D & usualDirection, std::mt19937 & generator) {
+Vector3D RandomDirection(const Vector3D & usualDirection, std::mt19937 & generator, double spread) {
     // generate random variables
     static std::uniform_real_distribution<double> d(0.0, 1.0);
     double u = d(generator);
     double v = d(generator);
 
     // map them to hemisphere
-    const double r = sqrt(u);
+    const double r = sqrt(u * spread);
     const double theta = 2 * M_PI * v;
 
     const double x = r * cos(theta);
     const double y = r * sin(theta);
 
-    Vector3D randomDirection (x, y, sqrt(1 - u));
+    Vector3D randomDirection (x, y, sqrt(1 - u * spread));
 
     // reorient (0, 0, 1) to usualDirection
     if(usualDirection == Vector3D(0, 0, -1)) {
@@ -38,14 +38,15 @@ Vector3D RandomDirection(const Vector3D & usualDirection, std::mt19937 & generat
 }
 
 Ray Intersection::Reflect(const Ray &incoming, double& powerMultiplier, std::mt19937 & generator) {
-    auto normal = GetNormal();
     auto material = GetMaterial();
-    Vector3D idealReflection = incoming.direction - normal * (2 * incoming.direction.Dot(normal));
+    auto normal = RandomDirection(GetNormal(), generator, material.roughness);
     if(material.reflective) {
+        //Vector3D normal = RandomDirection(normal, generator, 0.0);
+        Vector3D idealReflection = incoming.direction - normal * (2 * incoming.direction.Dot(normal));
         return Ray(incoming.Point(t), idealReflection);
     }
     else {
-        auto randomDirection = RandomDirection(normal, generator);
+        auto randomDirection = RandomDirection(normal, generator, 1.0);
         powerMultiplier *= randomDirection.Dot(normal);
         return Ray(incoming.Point(t), randomDirection);
     }
