@@ -98,7 +98,7 @@ int main() {
     }*/
 
     //ModelOBJ::Import("../03.obj", scene);
-    ModelOBJ::Import("../bunny.obj", scene);
+    //ModelOBJ::Import("../bunny.obj", scene);
     //scene.AddBody(std::make_unique<Sphere>(Vector3D(4,4,4), 2, whiteLight));
 
     //scene.AddBody(std::make_unique<Triangle>(Vector3D(10,-1,1), Vector3D(10,1,0), Vector3D(10,-1,-1), greenLight));
@@ -172,9 +172,19 @@ int main() {
     //scene.AddBody(std::make_unique<Sphere>(Vector3D(3,-0.1,0), 0.2, moltenTungsten)); // in LightBulb
     //scene.AddBody(std::make_unique<Sphere>(Vector3D(1,1,0), 0.45, beigeDiffuse));
     //scene.AddBody(std::make_unique<Sphere>(Vector3D(-1,1,0), 0.45, copper));
+    std::shared_ptr<Image> texture(new ImageJPEG("../earth.jpg", 1.0, 75));
+    auto sphere = std::make_unique<Sphere>(Vector3D(0,1,0), 1, copper);
+    sphere->SetMaterialInterpolator(
+            std::make_unique<TextureInterpolator>(std::make_unique<SpherePolarInterpolator>(),
+                                                  nullptr,
+                                                  texture,
+                                                  false
+            )
+            );
+    scene.AddBody(std::move(sphere));
 
     //Camera camera(Vector3D(-3,1,4), Vector3D(0.75,0,-1), Vector3D(0,1,0), image_width, image_height, 90);
-    Camera camera(Vector3D(0,1,4), Vector3D(0,0,-1), Vector3D(0,1,0), image_width, image_height, 90);
+    Camera camera(Vector3D(0,1,4), Vector3D(0,0,-1), Vector3D(0,1,0), image_width, image_height, 60);
 
     ImageJPEG image(image_width, image_height, 75);
     ImageJPEG bg("../sky.jpg", 0.1, 75);
@@ -205,7 +215,7 @@ int main() {
         }*/
     }
 
-    image.Save("stream04_b.jpeg", 0.1 / samples);
+    image.Save("stream04_c.jpeg", 0.1 / samples);
     auto stop = std::chrono::steady_clock::now();
     std::cout << "Finished, took " << ((stop - start).count() / 1e9) <<  " s." << std::endl;
 

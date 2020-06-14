@@ -1,5 +1,6 @@
 #include "ModelOBJ.h"
 #include "../body/Triangle.h"
+#include "../image/ImageJPEG.h"
 
 #include <iostream>
 #include <fstream>
@@ -38,6 +39,7 @@ void ModelOBJ::Import(const std::string &fileName, Scene &scene) {
     //Material chromium(Color(0,0,0), Color(0.95,0.95,0.7), false);
     //Material chromium(Color(0,0,0), Color(0.95,0.95,0.7), false);
     //Material chromium(Color(0,0,0), Color(0.95,0.015,0.005), false);
+    std::shared_ptr<Image> texture(new ImageJPEG("../earth.jpg", 1.0, 75));
     std::string current_mat = "";
     std::ifstream file(fileName);
     std::string line;
@@ -77,9 +79,15 @@ void ModelOBJ::Import(const std::string &fileName, Scene &scene) {
                 triangle->SetNormalInterpolator(std::make_unique<TriangleInterpolator<Vector3D>>(
                         findIndex(verticesNormal, an), findIndex(verticesNormal, bn), findIndex(verticesNormal, cn)
                 ));
-                triangle->SetMaterialInterpolator(std::make_unique<NormalDebugInterpolator>(std::make_unique<TriangleInterpolator<Vector3D>>(
-                        findIndex(verticesNormal, an), findIndex(verticesNormal, bn), findIndex(verticesNormal, cn)
-                )));
+                triangle->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(std::make_unique<SpherePolarInterpolator>(
+                        std::make_unique<TriangleInterpolator<Vector3D>>(
+                                findIndex(vertices, a), findIndex(vertices, b), findIndex(vertices, c)
+                        )
+                        ),
+                        nullptr,
+                        texture,
+                        false
+                ));
             }
             scene.AddBody(std::move(triangle));
             //scene.AddBody(std::make_unique<Triangle>(findIndex(vertices, a), findIndex(vertices, b), findIndex(vertices, c), beigeDiffuse));
