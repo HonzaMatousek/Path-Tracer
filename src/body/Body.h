@@ -9,13 +9,13 @@
 
 class Body {
 protected:
-    Material material;
+    std::unique_ptr<Interpolator<Material>> materialInterpolator;
     std::unique_ptr<Interpolator<Vector3D>> normalInterpolator;
 public:
     const Vector3D lowerCorner;
     const Vector3D upperCorner;
 
-    explicit Body(const Material & material = Material(), std::unique_ptr<Interpolator<Vector3D>> && normalInterpolator = std::make_unique<NormalizeInterpolator>(), const Vector3D & lowerCorner = Vector3D(0,0,0), const Vector3D & upperCorner = Vector3D(0,0,0)) : material(material), normalInterpolator(std::move(normalInterpolator)), lowerCorner(lowerCorner), upperCorner(upperCorner) {}
+    explicit Body(std::unique_ptr<Interpolator<Material>> && materialInterpolator = nullptr, std::unique_ptr<Interpolator<Vector3D>> && normalInterpolator = std::make_unique<NormalizeInterpolator>(), const Vector3D & lowerCorner = Vector3D(0,0,0), const Vector3D & upperCorner = Vector3D(0,0,0)) : materialInterpolator(std::move(materialInterpolator)), normalInterpolator(std::move(normalInterpolator)), lowerCorner(lowerCorner), upperCorner(upperCorner) {}
     virtual ~Body() = default;
 
     virtual void Intersect(const Ray & ray, Intersection & intersection) const = 0;
@@ -30,8 +30,8 @@ public:
     }
 
     [[ nodiscard ]]
-    virtual Material GetMaterial(const Vector3D & localCoordinates) const {
-        return material;
+    Material GetMaterial(const Vector3D & localCoordinates) const {
+        return materialInterpolator->Interpolate(localCoordinates);
     }
 
     [[ nodiscard ]]
@@ -39,7 +39,11 @@ public:
         return normalInterpolator->Interpolate(localCoordinates);
     }
 
-    void SetInterpolator(std::unique_ptr<Interpolator<Vector3D>> && normalInterpolator) {
+    void SetNormalInterpolator(std::unique_ptr<Interpolator<Vector3D>> && normalInterpolator) {
         this->normalInterpolator.swap(normalInterpolator);
+    }
+
+    void SetMaterialInterpolator(std::unique_ptr<Interpolator<Material>> && materialInterpolator) {
+        this->materialInterpolator.swap(materialInterpolator);
     }
 };

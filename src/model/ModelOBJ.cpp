@@ -74,9 +74,12 @@ void ModelOBJ::Import(const std::string &fileName, Scene &scene) {
             readFaceVertex(lineStream, c, ct, cn);
             auto triangle = std::make_unique<Triangle>(findIndex(vertices, a), findIndex(vertices, b), findIndex(vertices, c), current_mat == "mat_pi4c75f579" ? beigeDiffuse : chromium);
             if(an && bn && cn) {
-                triangle->SetInterpolator(std::make_unique<TriangleInterpolator<Vector3D>>(
+                triangle->SetNormalInterpolator(std::make_unique<TriangleInterpolator<Vector3D>>(
                         findIndex(verticesNormal, an), findIndex(verticesNormal, bn), findIndex(verticesNormal, cn)
                 ));
+                triangle->SetMaterialInterpolator(std::make_unique<NormalDebugInterpolator>(std::make_unique<TriangleInterpolator<Vector3D>>(
+                        findIndex(verticesNormal, an), findIndex(verticesNormal, bn), findIndex(verticesNormal, cn)
+                )));
             }
             scene.AddBody(std::move(triangle));
             //scene.AddBody(std::make_unique<Triangle>(findIndex(vertices, a), findIndex(vertices, b), findIndex(vertices, c), beigeDiffuse));

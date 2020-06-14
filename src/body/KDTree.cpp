@@ -14,7 +14,7 @@ void KDTree::Intersect(const Ray &ray, Intersection &intersection) const {
 }
 
 KDTree::KDTree(const std::vector<Body*> &bodies, const Vector3D &lowerCorner,
-               const Vector3D &upperCorner) : Body(Material(), nullptr, lowerCorner, upperCorner) {
+               const Vector3D &upperCorner) : Body(nullptr, nullptr, lowerCorner, upperCorner) {
     if(bodies.size() < 2) {
         // no need to construct tree
         this->bodies = bodies;
