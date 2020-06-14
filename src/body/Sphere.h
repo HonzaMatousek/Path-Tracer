@@ -12,9 +12,4 @@ public:
     ~Sphere() override = default;
 
     void Intersect(const Ray & ray, Intersection & intersection) const override;
-
-    [[ nodiscard ]]
-    Vector3D GetNormal(const Vector3D & localCoordinates) const override {
-        return Vector3D(localCoordinates).Normalize();
-    }
 };

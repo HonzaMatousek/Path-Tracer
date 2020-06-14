@@ -17,7 +17,7 @@
 const int image_width = 1920;// 1920;
 const int image_height = 1080; //1080;
 const int iteration_limit = 5;
-const int samples = 100;
+const int samples = 10;
 
 class LineEmployer {
     int freeLine = 0;
@@ -98,7 +98,7 @@ int main() {
     }*/
 
     //ModelOBJ::Import("../03.obj", scene);
-    //ModelOBJ::Import("../bunny.obj", scene);
+    ModelOBJ::Import("../bunny.obj", scene);
     //scene.AddBody(std::make_unique<Sphere>(Vector3D(4,4,4), 2, whiteLight));
 
     //scene.AddBody(std::make_unique<Triangle>(Vector3D(10,-1,1), Vector3D(10,1,0), Vector3D(10,-1,-1), greenLight));
@@ -170,8 +170,8 @@ int main() {
     //scene.AddBody(std::make_unique<Sphere>(Vector3D(4,0,-1), 1, moltenIron));
     //scene.AddBody(std::make_unique<Sphere>(Vector3D(4,0,1), 0.8, moltenCopper));
     //scene.AddBody(std::make_unique<Sphere>(Vector3D(3,-0.1,0), 0.2, moltenTungsten)); // in LightBulb
-    scene.AddBody(std::make_unique<Sphere>(Vector3D(1,1,0), 0.45, beigeDiffuse));
-    scene.AddBody(std::make_unique<Sphere>(Vector3D(-1,1,0), 0.45, copper));
+    //scene.AddBody(std::make_unique<Sphere>(Vector3D(1,1,0), 0.45, beigeDiffuse));
+    //scene.AddBody(std::make_unique<Sphere>(Vector3D(-1,1,0), 0.45, copper));
 
     //Camera camera(Vector3D(-3,1,4), Vector3D(0.75,0,-1), Vector3D(0,1,0), image_width, image_height, 90);
     Camera camera(Vector3D(0,1,4), Vector3D(0,0,-1), Vector3D(0,1,0), image_width, image_height, 90);

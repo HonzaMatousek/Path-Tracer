@@ -3,17 +3,19 @@
 #include "../math/Ray.h"
 #include "../math/Intersection.h"
 #include "../material/Material.h"
+#include "../interpolator/Interpolator.h"
 
 #include <memory>
 
 class Body {
 protected:
     Material material;
+    std::unique_ptr<Interpolator<Vector3D>> normalInterpolator;
 public:
     const Vector3D lowerCorner;
     const Vector3D upperCorner;
 
-    explicit Body(const Material & material = Material(), const Vector3D & lowerCorner = Vector3D(0,0,0), const Vector3D & upperCorner = Vector3D(0,0,0)) : material(material), lowerCorner(lowerCorner), upperCorner(upperCorner) {}
+    explicit Body(const Material & material = Material(), std::unique_ptr<Interpolator<Vector3D>> && normalInterpolator = std::make_unique<NormalizeInterpolator>(), const Vector3D & lowerCorner = Vector3D(0,0,0), const Vector3D & upperCorner = Vector3D(0,0,0)) : material(material), normalInterpolator(std::move(normalInterpolator)), lowerCorner(lowerCorner), upperCorner(upperCorner) {}
     virtual ~Body() = default;
 
     virtual void Intersect(const Ray & ray, Intersection & intersection) const = 0;
@@ -33,7 +35,7 @@ public:
     }
 
     [[ nodiscard ]]
-    virtual Vector3D GetNormal(const Vector3D & localCoordinates) const {
-        return Vector3D(0, 0, 0);
+    Vector3D GetNormal(const Vector3D & localCoordinates) const {
+        return normalInterpolator->Interpolate(localCoordinates);
     }
 };

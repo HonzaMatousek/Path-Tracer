@@ -15,9 +15,4 @@ public:
     Triangle(const Vector3D & a, const Vector3D & b, const Vector3D & c, const Material &material);
 
     void Intersect(const Ray & ray, Intersection & intersection) const override;
-
-    [[ nodiscard ]]
-    Vector3D GetNormal(const Vector3D & localCoordinates) const override {
-        return normal;
-    }
 };
