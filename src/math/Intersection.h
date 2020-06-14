@@ -18,10 +18,12 @@ public:
     [[ nodiscard ]]
     Ray Reflect(const Ray & incoming, double & powerMultiplier, std::mt19937 & generator);
 
-    bool operator < (const Intersection & rhs) const;
+    bool operator < (const Intersection & rhs) const {
+        return t < rhs.t;
+    }
 
     void ChooseCloser(Intersection && other) {
-        if(other < *this) std::swap(other, *this);
+        if(other < *this) *this = std::move(other);
     }
 
     operator bool () const {

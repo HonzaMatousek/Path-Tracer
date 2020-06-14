@@ -37,4 +37,25 @@ public:
         return true;
     }
 
+    [[ nodiscard ]]
+    bool IntersectAABB(const Vector3D & l, const Vector3D & u, double & tl, double & tu) const {
+        tl = -std::numeric_limits<double>::infinity();
+        tu = std::numeric_limits<double>::infinity();
+
+        for (auto axis : Vector3D::axes) {
+            double t1 = (l.*axis - origin.*axis) / direction.*axis;
+            double t2 = (u.*axis - origin.*axis) / direction.*axis;
+            if (t1 < t2) {
+                tl = std::max(tl, t1);
+                tu = std::min(tu, t2);
+            } else {
+                tl = std::max(tl, t2);
+                tu = std::min(tu, t1);
+            }
+            if (tu < 0 || tl > tu) return false;
+        }
+
+        return true;
+    }
+
 };
