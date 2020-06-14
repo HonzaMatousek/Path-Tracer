@@ -38,4 +38,6 @@ public:
 
     void WriteIntoByteBufferRGB(unsigned char * buffer, double exposition) const;
     void WriteIntoByteBufferBGR(unsigned char * buffer, double exposition) const;
+
+    static Color ReadFromByteBufferRGB(unsigned char * buffer, double exposition);
 };

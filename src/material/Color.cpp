@@ -90,3 +90,11 @@ void Color::WriteIntoByteBufferBGR(unsigned char *buffer, double exposition) con
     buffer[1] = (unsigned char)std::clamp<double>(pow(g * exposition, 1/2.2) * 255, 0, 255);
     buffer[0] = (unsigned char)std::clamp<double>(pow(b * exposition, 1/2.2) * 255, 0, 255);
 }
+
+Color Color::ReadFromByteBufferRGB(unsigned char *buffer, double exposition) {
+    return Color(
+            pow(buffer[0] / 255.0, 2.2) / exposition,
+            pow(buffer[1] / 255.0, 2.2) / exposition,
+            pow(buffer[2] / 255.0, 2.2) / exposition
+    );
+}

@@ -1,7 +1,9 @@
 #include <random>
 #include "Intersection.h"
 
-Intersection::Intersection(const Vector3D &point, const Vector3D &normal, double t, const Material &material) : point(point), normal(normal), t(t), material(material) {}
+Intersection::Intersection(const Vector3D &point, const Vector3D &normal, double t, const Material &material) : point(point), normal(normal), t(t), material(material) {
+    this->normal.Normalize();
+}
 
 Vector3D RandomDirection(const Vector3D & usualDirection, std::mt19937 & generator) {
     // generate random variables

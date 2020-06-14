@@ -8,12 +8,13 @@ class Image {
 protected:
     std::vector<std::vector<Color>> pixels;
 public:
-    const int width;
-    const int height;
+    int width;
+    int height;
 
     Image(int width, int height);
 
     void AddPixel(int x, int y, const Color & color);
+    Color GetPixel(double x, double y) const;
 
     virtual void Save(const std::string & fileName, double exposition) const = 0;
 };
