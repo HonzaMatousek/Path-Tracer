@@ -40,7 +40,7 @@ void ModelOBJ::Import(const std::string &fileName, Scene &scene) {
     Material chromium(Color(0,0,0), Color(0.95,0.4,0.45), false);
     //Material chromium(Color(0,0,0), Color(0.95,0.95,0.7), false);
     //Material chromium(Color(0,0,0), Color(0.95,0.015,0.005), false);
-    std::shared_ptr<Image> texture(new ImageJPEG("../earth.jpg", 1.0, 75));
+    std::shared_ptr<Image> texture(new ImageJPEG("earth.jpg", 1.0, 75));
     std::string current_mat = "";
     std::ifstream file(fileName);
     std::string line;

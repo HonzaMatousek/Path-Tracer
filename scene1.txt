@@ -1,0 +1,27 @@
+# import model into scene
+model bunny.obj
+
+# choose current material
+current_material whiteLight
+
+# place sphere into scene
+# primitive_type x y z radius
+sphere -4 2 6 1
+
+current_material whiteRough
+
+# triangle
+triangle -3000 -0.3 -3000           -3000 -0.3 3000      3000 -0.3  3000
+triangle -3000 -0.3 -3000            3000 -0.3 3000      3000 -0.3 -3000
+
+# perspective camera, from, direction, up vector, image width, image height, fov
+camera       0 1 8        0 0 -1           0 1 0         1920          1080         60
+
+# render to file, samples, exposition
+# output       rabbit.jpg     10    10
+
+background_texture sky2.jpg
+
+# perspective camera, from, direction, up vector, image width, image height, fov
+camera       0 0.0 9        0 0 -1           0 1 0         1920          1080         60
+output       rabbit2.jpg     100    10
