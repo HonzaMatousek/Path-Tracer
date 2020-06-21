@@ -65,6 +65,7 @@ int main() {
     Material copper(Color(0,0,0), Color(0.9333,0.6196,0.5373));
 
     Material whiteDiffuse(Color(0,0,0), Color(0.95,0.95,0.95), false);
+    Material whiteRough(Color(0,0,0), Color(0.95,0.92,0.90), true, 0.0002);
     Material redDiffuse(Color(0,0,0), Color(0.95,0.0,0.0), false);
     Material orangeDiffuse(Color(0,0,0), Color(0.95,0.95,0.0), false);
     Material greenDiffuse(Color(0,0,0), Color(0.0,0.95,0.0), false);
@@ -96,10 +97,10 @@ int main() {
 
     //scene.AddBody(std::make_unique<Triangle>(Vector3D(10,-1,1), Vector3D(10,1,0), Vector3D(10,-1,-1), greenLight));
 
-    Vector3D a(-1.5,0-0.170126,-1);
-    Vector3D b(-1.5,0-0.170126,10);
-    Vector3D c(1.5,0-0.170126,10);
-    Vector3D d(1.5,0-0.170126,-1);
+    Vector3D a(-1500,0-0.150026,-1000);
+    Vector3D b(-1500,0-0.150026,1000);
+    Vector3D c(1500,0-0.150026,1000);
+    Vector3D d(1500,0-0.150026,-1000);
     Vector3D e(-1.5,2-0.170126,-1);
     Vector3D f(-1.5,2-0.170126,10);
     Vector3D g(1.5,2-0.170126,10);
@@ -124,14 +125,14 @@ int main() {
 
     // strop
     scene.AddBody(std::make_unique<Triangle>(e * 2, g * 2, f * 2, whiteDiffuse));
-    scene.AddBody(std::make_unique<Triangle>(e * 2, h * 2, g * 2, whiteDiffuse));
+    scene.AddBody(std::make_unique<Triangle>(e * 2, h * 2, g * 2, whiteDiffuse));*/
 
     // podlaha
-    scene.AddBody(std::make_unique<Triangle>(a * 2, b * 2, c * 2, whiteDiffuse));
-    scene.AddBody(std::make_unique<Triangle>(a * 2, c * 2, d * 2, whiteDiffuse));
+    scene.AddBody(std::make_unique<Triangle>(a * 2, b * 2, c * 2, whiteRough));
+    scene.AddBody(std::make_unique<Triangle>(a * 2, c * 2, d * 2, whiteRough));
 
     // svetlo
-    scene.AddBody(std::make_unique<Triangle>(le * 2, lg * 2, lf * 2, whiteLight));
+    /*scene.AddBody(std::make_unique<Triangle>(le * 2, lg * 2, lf * 2, whiteLight));
     scene.AddBody(std::make_unique<Triangle>(le * 2, lh * 2, lg * 2, whiteLight));*/
 
     // prava
@@ -178,7 +179,7 @@ int main() {
     scene.AddBody(std::move(sphere));*/
 
     //Camera camera(Vector3D(-3,1,4), Vector3D(0.75,0,-1), Vector3D(0,1,0), image_width, image_height, 90);
-    Camera camera(Vector3D(0,1,4), Vector3D(0,0,-1), Vector3D(0,1,0), image_width, image_height, 90);
+    Camera camera(Vector3D(0,1,8), Vector3D(0,0,-1), Vector3D(0,1,0), image_width, image_height, 60);
 
     ImageJPEG image(image_width, image_height, 75);
     std::shared_ptr<Image> bg(new ImageJPEG("../sky.jpg", 0.1, 75));
@@ -218,7 +219,7 @@ int main() {
         }*/
     }
 
-    image.Save("stream04_d.jpeg", 0.1 / samples);
+    image.Save("stream04_e2.jpeg", 0.1 / samples);
     auto stop = std::chrono::steady_clock::now();
     std::cout << "Finished, took " << ((stop - start).count() / 1e9) <<  " s." << std::endl;
 

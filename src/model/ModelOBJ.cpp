@@ -35,8 +35,9 @@ void ModelOBJ::Import(const std::string &fileName, Scene &scene) {
     //Material beigeDiffuse(Color(0,0,0), Color(0.95,0.95,0.7), false);
     Material beigeDiffuse(Color(0,0,0), Color(0.69,0.065,0.065), false);
     //Material chromium(Color(0, 0, 0), Color(0.5529,0.5529,0.5529), true); // chromium
-    Material chromium(Color(0, 0, 0), Color(1,0.71,0.29), true, 0.2); // gold
+    //Material chromium(Color(0, 0, 0), Color(1,0.71,0.29), true, 0.2); // gold
     //Material chromium(Color(0,0,0), Color(0.95,0.95,0.7), false);
+    Material chromium(Color(0,0,0), Color(0.95,0.4,0.45), false);
     //Material chromium(Color(0,0,0), Color(0.95,0.95,0.7), false);
     //Material chromium(Color(0,0,0), Color(0.95,0.015,0.005), false);
     std::shared_ptr<Image> texture(new ImageJPEG("../earth.jpg", 1.0, 75));
@@ -61,13 +62,13 @@ void ModelOBJ::Import(const std::string &fileName, Scene &scene) {
             double x, y, z;
             lineStream >> x >> y >> z;
             verticesTexture.emplace_back(Vector3D(x, y, z));
-            lowest = std::min(lowest, y);
+            //lowest = std::min(lowest, y);
         }
         if(command == "vn") {
             double x, y, z;
             lineStream >> x >> y >> z;
             verticesNormal.emplace_back(Vector3D(x, y, z));
-            lowest = std::min(lowest, y);
+            //lowest = std::min(lowest, y);
         }
         else if(command == "f") {
             int a, b, c, at, bt, ct, an, bn, cn;
@@ -79,10 +80,9 @@ void ModelOBJ::Import(const std::string &fileName, Scene &scene) {
                 triangle->SetNormalInterpolator(std::make_unique<TriangleInterpolator<Vector3D>>(
                         findIndex(verticesNormal, an), findIndex(verticesNormal, bn), findIndex(verticesNormal, cn)
                 ));
-                /*
                 triangle->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(std::make_unique<SpherePolarInterpolator>(
                         std::make_unique<TriangleInterpolator<Vector3D>>(
-                                findIndex(vertices, a), findIndex(vertices, b), findIndex(vertices, c)
+                                findIndex(verticesNormal, an), findIndex(verticesNormal, bn), findIndex(verticesNormal, cn)
                         )
                         ),
                         nullptr,
@@ -90,7 +90,27 @@ void ModelOBJ::Import(const std::string &fileName, Scene &scene) {
                         false,
                         0.0
                 ));
-                */
+                /*triangle->SetMaterialInterpolator(std::make_unique<NormalDebugInterpolator>(std::make_unique<SpherePolarInterpolator>(
+                        std::make_unique<TriangleInterpolator<Vector3D>>(
+                                findIndex(vertices, a), findIndex(vertices, b), findIndex(vertices, c)
+                        )
+                                                                                        )
+                ));*/
+                //triangle->SetMaterialInterpolator(std::make_unique<NormalDebugInterpolator>(std::make_unique<SpherePolarInterpolator>()));
+                /*triangle->SetMaterialInterpolator(std::make_unique<NormalDebugInterpolator>(
+                        std::make_unique<TriangleInterpolator<Vector3D>>(
+                                findIndex(vertices, a), findIndex(vertices, b), findIndex(vertices, c)
+                        )
+                ));*/
+                /*triangle->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(
+                        std::make_unique<TriangleInterpolator<Vector3D>>(
+                                findIndex(vertices, a), findIndex(vertices, b), findIndex(vertices, c)
+                        ),
+                                                                                        nullptr,
+                                                                                        texture,
+                                                                                        false,
+                                                                                        0.0
+                ));*/
             }
             scene.AddBody(std::move(triangle));
             //scene.AddBody(std::make_unique<Triangle>(findIndex(vertices, a), findIndex(vertices, b), findIndex(vertices, c), beigeDiffuse));

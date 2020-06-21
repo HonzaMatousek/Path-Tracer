@@ -54,8 +54,8 @@ public:
     [[ nodiscard ]]
     Vector3D Interpolate(const Vector3D & coordinates) const override {
         Vector3D coord = base ? base->Interpolate(coordinates) : coordinates;
-        double bg_y = acos(coordinates.y / coordinates.Length()) / M_PI;
-        double bg_x = atan2(coordinates.z, coordinates.x) / 2 / M_PI + 0.5;
+        double bg_y = acos(coord.y / coord.Length()) / M_PI;
+        double bg_x = atan2(coord.z, coord.x) / 2 / M_PI + 0.5;
         return Vector3D(bg_x, bg_y, 0);
     }
 };
