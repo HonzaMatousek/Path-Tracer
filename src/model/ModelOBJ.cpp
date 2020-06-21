@@ -31,7 +31,7 @@ void readFaceVertex(std::istream & is, int & vIndex, int & vtIndex, int & vnInde
     }
 }
 
-void ModelOBJ::Import(const std::string &fileName, Scene &scene) {
+void ModelOBJ::Import(const std::string &fileName, const Transform & transform, Scene &scene) {
     //Material beigeDiffuse(Color(0,0,0), Color(0.95,0.95,0.7), false);
     Material beigeDiffuse(Color(0,0,0), Color(0.69,0.065,0.065), false);
     //Material chromium(Color(0, 0, 0), Color(0.5529,0.5529,0.5529), true); // chromium
@@ -55,7 +55,7 @@ void ModelOBJ::Import(const std::string &fileName, Scene &scene) {
         if(command == "v") {
             double x, y, z;
             lineStream >> x >> y >> z;
-            vertices.emplace_back(Vector3D(x, y, z));
+            vertices.emplace_back(transform.Apply(Vector3D(x, y, z)));
             lowest = std::min(lowest, y);
         }
         if(command == "vt") {
@@ -67,7 +67,7 @@ void ModelOBJ::Import(const std::string &fileName, Scene &scene) {
         if(command == "vn") {
             double x, y, z;
             lineStream >> x >> y >> z;
-            verticesNormal.emplace_back(Vector3D(x, y, z));
+            verticesNormal.emplace_back(transform.ApplyWithoutTranslation(Vector3D(x, y, z)));
             //lowest = std::min(lowest, y);
         }
         else if(command == "f") {

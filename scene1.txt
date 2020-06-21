@@ -1,5 +1,9 @@
 # import model into scene
+move 0 0 -10
+rotate_y 90
 model bunny.obj
+pop_transform
+pop_transform
 
 # choose current material
 current_material whiteLight
@@ -24,4 +28,4 @@ background_texture sky2.jpg
 
 # perspective camera, from, direction, up vector, image width, image height, fov
 camera       0 0.0 9        0 0 -1           0 1 0         1920          1080         60
-output       rabbit2.jpg     100    10
+output       rabbit2.jpg     1000    10

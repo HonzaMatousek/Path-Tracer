@@ -8,6 +8,7 @@
 #include "../camera/Camera.h"
 #include "../image/ImageJPEG.h"
 #include "Triangle.h"
+#include "../math/Transform.h"
 #include <fstream>
 #include <sstream>
 #include <map>
@@ -15,6 +16,7 @@
 #include <thread>
 #include <iostream>
 #include <mutex>
+#include <stack>
 
 class LineEmployer {
     int freeLine = 0;
@@ -92,6 +94,8 @@ Scene::Scene(std::string fileName) : Body(std::make_unique<FlatInterpolator<Mate
             {"whiteRough", Material(Color(0,0,0), Color(0.95,0.92,0.90), true, 0.0002)},
     };
     Material * current_material = &materialLib["whiteDiffuse"];
+    std::stack<Transform> transforms;
+    transforms.push(Transform::Scale(1));
     while(std::getline(file, line)) {
         std::string command;
         std::istringstream lineStream(line);
@@ -99,20 +103,36 @@ Scene::Scene(std::string fileName) : Body(std::make_unique<FlatInterpolator<Mate
         if(command == "#") {
             // skip comment
         }
+        else if(command == "move") {
+            double x, y, z;
+            lineStream >> x >> y >> z;
+            transforms.push(transforms.top() * Transform::Translation(x, y, z));
+        }
+        else if(command == "rotate_y") {
+            double deg;
+            lineStream >> deg;
+            transforms.push(transforms.top() * Transform::RotateY(deg / 180.0 * M_PI));
+        }
+        else if(command == "pop_transform") {
+            if(transforms.size() == 1) {
+                throw std::runtime_error("Popping poop, GTFO!");
+            }
+            transforms.pop();
+        }
         else if(command == "model") {
             std::string modelPath;
             lineStream >> modelPath;
-            ModelOBJ::Import(modelPath, *this);
+            ModelOBJ::Import(modelPath, transforms.top(), *this);
         }
         else if(command == "sphere") {
             double x, y, z, radius;
             lineStream >> x >> y >> z >> radius;
-            AddBody(std::make_unique<Sphere>(Vector3D(x, y, z), radius, *current_material));
+            AddBody(std::make_unique<Sphere>(transforms.top().Apply(Vector3D(x, y, z)), radius, *current_material));
         }
         else if(command == "triangle") {
             double ax, ay, az, bx, by, bz, cx, cy, cz;
             lineStream >> ax >> ay >> az >> bx >> by >> bz >> cx >> cy >> cz;
-            AddBody(std::make_unique<Triangle>(Vector3D(ax, ay, az), Vector3D(bx, by, bz), Vector3D(cx, cy, cz), *current_material));
+            AddBody(std::make_unique<Triangle>(transforms.top().Apply(Vector3D(ax, ay, az)), transforms.top().Apply(Vector3D(bx, by, bz)), transforms.top().Apply(Vector3D(cx, cy, cz)), *current_material));
         }
         else if(command == "current_material") {
             std::string newCurrentMaterialName;
@@ -139,7 +159,9 @@ Scene::Scene(std::string fileName) : Body(std::make_unique<FlatInterpolator<Mate
         else if(command == "camera") {
             double eye_x, eye_y, eye_z, dir_x, dir_y, dir_z, up_x, up_y, up_z, fov;
             lineStream >> eye_x >> eye_y >> eye_z >> dir_x >> dir_y >> dir_z >> up_x >> up_y >> up_z >> image_width >> image_height >> fov;
-            camera = std::make_unique<Camera>(Vector3D(eye_x, eye_y, eye_z), Vector3D(dir_x, dir_y, dir_z), Vector3D(up_x, up_y, up_z), image_width, image_height, fov);
+            camera = std::make_unique<Camera>(transforms.top().Apply(Vector3D(eye_x, eye_y, eye_z)),
+                                              transforms.top().ApplyWithoutTranslation(Vector3D(dir_x, dir_y, dir_z)),
+                                              transforms.top().ApplyWithoutTranslation(Vector3D(up_x, up_y, up_z)), image_width, image_height, fov);
         }
         else if(command == "output") {
             std::string outputFileName;
