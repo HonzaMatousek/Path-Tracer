@@ -125,7 +125,12 @@ Scene::Scene(const std::string & fileName) : Body(std::make_unique<FlatInterpola
         else if(command == "sphere") {
             double x, y, z, radius;
             lineStream >> x >> y >> z >> radius;
-            AddBody(std::make_unique<Sphere>(transforms.top().Apply(Vector3D(x, y, z)), radius, current_material->base));
+            auto sphere = std::make_unique<Sphere>(transforms.top().Apply(Vector3D(x, y, z)), radius, current_material->base);
+            sphere->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(
+                    std::make_unique<SpherePolarInterpolator>(),
+                    current_material
+            ));
+            AddBody(std::move(sphere));
         }
         else if(command == "triangle") {
             double ax, ay, az, bx, by, bz, cx, cy, cz;
@@ -151,11 +156,11 @@ Scene::Scene(const std::string & fileName) : Body(std::make_unique<FlatInterpola
             lineStream >> texturePath;
             std::shared_ptr<Image> bg(new ImageJPEG(texturePath, 1, 95));
             SetMaterialInterpolator(
-                std::make_unique<TextureInterpolator>(std::make_unique<SpherePolarInterpolator>(),
-                  bg,
-                  nullptr,
-                  false,
-                  0.0
+                std::make_unique<LegacyTextureInterpolator>(std::make_unique<SpherePolarInterpolator>(),
+                                                            bg,
+                                                            nullptr,
+                                                            false,
+                                                            0.0
                 )
             );
         }
@@ -230,20 +235,27 @@ void Scene::LoadMTL(const std::string & fileName) {
             current_material->base.reflective = (m > 0.5);
         }
         else if(command == "Kr") { // roughness
-            double m;
             lineStream >> current_material->base.roughness;
         }
         else if(command == "map_Kd") { // albedo texture
-
+            std::string texturePath;
+            lineStream >> texturePath;
+            current_material->albedoTexture = std::make_shared<ImageJPEG>(texturePath, 1, 95);
         }
         else if(command == "map_Ka") { // emission texture
-
+            std::string texturePath;
+            lineStream >> texturePath;
+            current_material->emissiveTexture = std::make_shared<ImageJPEG>(texturePath, 1, 95);
         }
         else if(command == "map_Km") { // metalness texture
-
+            std::string texturePath;
+            lineStream >> texturePath;
+            current_material->metalnessTexture = std::make_shared<ImageJPEG>(texturePath, 1, 95);
         }
         else if(command == "map_Kr") { // roughness texture
-
+            std::string texturePath;
+            lineStream >> texturePath;
+            current_material->roughnessTexture = std::make_shared<ImageJPEG>(texturePath, 1, 95);
         }
     }
 }

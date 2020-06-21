@@ -1,6 +1,5 @@
 #include "ModelOBJ.h"
 #include "../body/Triangle.h"
-#include "../image/ImageJPEG.h"
 
 #include <iostream>
 #include <fstream>
@@ -53,13 +52,11 @@ void ModelOBJ::Import(const std::string &fileName, const Transform & transform, 
             double x, y, z;
             lineStream >> x >> y >> z;
             verticesTexture.emplace_back(Vector3D(x, y, z));
-            //lowest = std::min(lowest, y);
         }
         if(command == "vn") {
             double x, y, z;
             lineStream >> x >> y >> z;
             verticesNormal.emplace_back(transform.ApplyWithoutTranslation(Vector3D(x, y, z)));
-            //lowest = std::min(lowest, y);
         }
         else if(command == "f") {
             int a, b, c, at, bt, ct, an, bn, cn;
@@ -71,40 +68,16 @@ void ModelOBJ::Import(const std::string &fileName, const Transform & transform, 
                 triangle->SetNormalInterpolator(std::make_unique<TriangleInterpolator<Vector3D>>(
                         findIndex(verticesNormal, an), findIndex(verticesNormal, bn), findIndex(verticesNormal, cn)
                 ));
-                /*triangle->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(std::make_unique<SpherePolarInterpolator>(
+            }
+            if(at && bt && ct) {
+                triangle->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(
                         std::make_unique<TriangleInterpolator<Vector3D>>(
-                                findIndex(verticesNormal, an), findIndex(verticesNormal, bn), findIndex(verticesNormal, cn)
-                        )
+                                findIndex(verticesTexture, at), findIndex(verticesTexture, bt), findIndex(verticesTexture, ct)
                         ),
-                        nullptr,
-                        texture,
-                        false,
-                        0.0
-                ));*/
-                /*triangle->SetMaterialInterpolator(std::make_unique<NormalDebugInterpolator>(std::make_unique<SpherePolarInterpolator>(
-                        std::make_unique<TriangleInterpolator<Vector3D>>(
-                                findIndex(vertices, a), findIndex(vertices, b), findIndex(vertices, c)
-                        )
-                                                                                        )
-                ));*/
-                //triangle->SetMaterialInterpolator(std::make_unique<NormalDebugInterpolator>(std::make_unique<SpherePolarInterpolator>()));
-                /*triangle->SetMaterialInterpolator(std::make_unique<NormalDebugInterpolator>(
-                        std::make_unique<TriangleInterpolator<Vector3D>>(
-                                findIndex(vertices, a), findIndex(vertices, b), findIndex(vertices, c)
-                        )
-                ));*/
-                /*triangle->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(
-                        std::make_unique<TriangleInterpolator<Vector3D>>(
-                                findIndex(vertices, a), findIndex(vertices, b), findIndex(vertices, c)
-                        ),
-                                                                                        nullptr,
-                                                                                        texture,
-                                                                                        false,
-                                                                                        0.0
-                ));*/
+                        current_material
+                ));
             }
             scene.AddBody(std::move(triangle));
-            //scene.AddBody(std::make_unique<Triangle>(findIndex(vertices, a), findIndex(vertices, b), findIndex(vertices, c), beigeDiffuse));
         }
         else if(command == "mtllib") {
             std::string mtlFileName;

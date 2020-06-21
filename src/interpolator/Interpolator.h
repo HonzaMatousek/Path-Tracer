@@ -4,6 +4,7 @@
 #include "../math/Vector3D.h"
 #include "../material/Material.h"
 #include "../image/Image.h"
+#include "../material/TexturedMaterial.h"
 
 template <typename T>
 class Interpolator {
@@ -76,14 +77,14 @@ public:
     }
 };
 
-class TextureInterpolator : public Interpolator<Material> {
+class LegacyTextureInterpolator : public Interpolator<Material> {
     std::unique_ptr<Interpolator<Vector3D>> base;
     std::shared_ptr<Image> emissionTexture;
     std::shared_ptr<Image> albedoTexture;
     bool reflective;
     double roughness;
 public:
-    TextureInterpolator(std::unique_ptr<Interpolator<Vector3D>> && base, const std::shared_ptr<Image> & emissionTexture, const std::shared_ptr<Image> & albedoTexture, bool reflective, double roughness) : base(std::move(base)), emissionTexture(emissionTexture), albedoTexture(albedoTexture), reflective(reflective), roughness(roughness) {}
+    LegacyTextureInterpolator(std::unique_ptr<Interpolator<Vector3D>> && base, const std::shared_ptr<Image> & emissionTexture, const std::shared_ptr<Image> & albedoTexture, bool reflective, double roughness) : base(std::move(base)), emissionTexture(emissionTexture), albedoTexture(albedoTexture), reflective(reflective), roughness(roughness) {}
 
     [[ nodiscard ]]
     Material Interpolate(const Vector3D & coordinates) const override {
@@ -92,6 +93,24 @@ public:
             emissionTexture ? emissionTexture->GetPixel(tex_coords.x, tex_coords.y) : Color(),
             albedoTexture ? albedoTexture->GetPixel(tex_coords.x, tex_coords.y) : Color(),
             reflective
+        );
+    }
+};
+
+class TextureInterpolator : public Interpolator<Material> {
+    std::unique_ptr<Interpolator<Vector3D>> base;
+    const TexturedMaterial * material;
+public:
+    TextureInterpolator(std::unique_ptr<Interpolator<Vector3D>> && base, const TexturedMaterial * material) : base(std::move(base)), material(material) {}
+
+    [[ nodiscard ]]
+    Material Interpolate(const Vector3D & coordinates) const override {
+        Vector3D tex_coords(base->Interpolate(coordinates));
+        return Material(
+                material->emissiveTexture ? material->emissiveTexture->GetPixel(tex_coords.x, tex_coords.y) : material->base.emissive,
+                material->albedoTexture ? material->albedoTexture->GetPixel(tex_coords.x, tex_coords.y) : material->base.albedo,
+                material->base.reflective,
+                material->base.roughness
         );
     }
 };
