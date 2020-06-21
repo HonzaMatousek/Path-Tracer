@@ -1,0 +1,31 @@
+# import model into scene
+move 0 0 0
+rotate_y 30
+model 03.obj
+pop_transform
+pop_transform
+
+# choose current material
+current_material whiteLight
+
+# place sphere into scene
+# primitive_type x y z radius
+# sphere -4 2 6 1
+
+current_material whiteRough
+
+# triangle
+triangle -3000 0 -3000           -3000 0 3000      3000 0  3000
+triangle -3000 0 -3000            3000 0 3000      3000 0 -3000
+
+# perspective camera, from, direction, up vector, image width, image height, fov
+# camera       0 2 1        0 -0.2 -1           0 1 0         1920          1080         60
+
+# render to file, samples, exposition
+# output       rabbit.jpg     10    10
+
+background_texture sky.jpg
+
+# perspective camera, from, direction, up vector, image width, image height, fov
+camera       0 0.5 2        0 0 -1           0 1 0         1920          1080         60
+output       zidle01.jpg     10    1

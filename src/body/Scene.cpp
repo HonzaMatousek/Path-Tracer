@@ -84,16 +84,14 @@ void Scene::Compile() {
 
 Scene::Scene() : Body(std::make_unique<FlatInterpolator<Material>>(Material())) {}
 
-Scene::Scene(std::string fileName) : Body(std::make_unique<FlatInterpolator<Material>>(Material())) {
+Scene::Scene(const std::string & fileName) : Body(std::make_unique<FlatInterpolator<Material>>(Material())) {
     //SetMaterialInterpolator(std::make_unique<FlatInterpolator<Material>>(Material(Color(0,0,0), Color(), false)));
     std::ifstream file(fileName);
     std::string line;
-    std::map<std::string, Material> materialLib {
-            {"whiteDiffuse", Material(Color(0,0,0), Color(0.95,0.95,0.95), false)},
-            {"whiteLight", Material(Color(100,100,100), Color(0,0,0))},
-            {"whiteRough", Material(Color(0,0,0), Color(0.95,0.92,0.90), true, 0.0002)},
-    };
-    Material * current_material = &materialLib["whiteDiffuse"];
+    materialLibrary["whiteDiffuse"].base = Material(Color(0,0,0), Color(0.95,0.95,0.95), false);
+    materialLibrary["whiteLight"].base = Material(Color(100,100,100), Color(0,0,0));
+    materialLibrary["whiteRough"].base = Material(Color(0,0,0), Color(0.95,0.92,0.90), true, 0.0002);
+    TexturedMaterial * current_material = &materialLibrary["whiteDiffuse"];
     std::stack<Transform> transforms;
     transforms.push(Transform::Scale(1));
     while(std::getline(file, line)) {
@@ -127,21 +125,26 @@ Scene::Scene(std::string fileName) : Body(std::make_unique<FlatInterpolator<Mate
         else if(command == "sphere") {
             double x, y, z, radius;
             lineStream >> x >> y >> z >> radius;
-            AddBody(std::make_unique<Sphere>(transforms.top().Apply(Vector3D(x, y, z)), radius, *current_material));
+            AddBody(std::make_unique<Sphere>(transforms.top().Apply(Vector3D(x, y, z)), radius, current_material->base));
         }
         else if(command == "triangle") {
             double ax, ay, az, bx, by, bz, cx, cy, cz;
             lineStream >> ax >> ay >> az >> bx >> by >> bz >> cx >> cy >> cz;
-            AddBody(std::make_unique<Triangle>(transforms.top().Apply(Vector3D(ax, ay, az)), transforms.top().Apply(Vector3D(bx, by, bz)), transforms.top().Apply(Vector3D(cx, cy, cz)), *current_material));
+            AddBody(std::make_unique<Triangle>(transforms.top().Apply(Vector3D(ax, ay, az)), transforms.top().Apply(Vector3D(bx, by, bz)), transforms.top().Apply(Vector3D(cx, cy, cz)), current_material->base));
         }
         else if(command == "current_material") {
             std::string newCurrentMaterialName;
             lineStream >> newCurrentMaterialName;
-            auto it = materialLib.find(newCurrentMaterialName);
-            if(it == materialLib.end()) {
+            auto it = materialLibrary.find(newCurrentMaterialName);
+            if(it == materialLibrary.end()) {
                 throw std::runtime_error("Material not found, GTFO!");
             }
             current_material = &(it->second);
+        }
+        else if(command == "load_material_library") {
+            std::string mtlFileName;
+            lineStream >> mtlFileName;
+            LoadMTL(mtlFileName);
         }
         else if(command == "background_texture") {
             std::string texturePath;
@@ -200,6 +203,53 @@ void Scene::Render() {
     }
     auto stop = std::chrono::steady_clock::now();
     std::cout << "Finished, took " << ((stop - start).count() / 1e9) <<  " s." << std::endl;
+}
+
+void Scene::LoadMTL(const std::string & fileName) {
+    TexturedMaterial * current_material = &materialLibrary["whiteDiffuse"];
+    std::ifstream file(fileName);
+    std::string line;
+    while(std::getline(file, line)) {
+        std::string command;
+        std::istringstream lineStream(line);
+        lineStream >> command;
+        if(command == "newmtl") {
+            std::string newCurrentMaterialName;
+            lineStream >> newCurrentMaterialName;
+            current_material = &materialLibrary[newCurrentMaterialName];
+        }
+        else if(command == "Kd") { // albedo
+            lineStream >> current_material->base.albedo.r >> current_material->base.albedo.g >> current_material->base.albedo.b;
+        }
+        else if(command == "Ka") { // emission
+            lineStream >> current_material->base.emissive.r >> current_material->base.emissive.g >> current_material->base.emissive.b;
+        }
+        else if(command == "Km") { // metalness
+            double m;
+            lineStream >> m;
+            current_material->base.reflective = (m > 0.5);
+        }
+        else if(command == "Kr") { // roughness
+            double m;
+            lineStream >> current_material->base.roughness;
+        }
+        else if(command == "map_Kd") { // albedo texture
+
+        }
+        else if(command == "map_Ka") { // emission texture
+
+        }
+        else if(command == "map_Km") { // metalness texture
+
+        }
+        else if(command == "map_Kr") { // roughness texture
+
+        }
+    }
+}
+
+const TexturedMaterial * Scene::GetMaterial(const std::string &materialName) const {
+    return &materialLibrary.at(materialName);
 }
 
 Scene::~Scene() = default;

@@ -32,16 +32,7 @@ void readFaceVertex(std::istream & is, int & vIndex, int & vtIndex, int & vnInde
 }
 
 void ModelOBJ::Import(const std::string &fileName, const Transform & transform, Scene &scene) {
-    //Material beigeDiffuse(Color(0,0,0), Color(0.95,0.95,0.7), false);
-    Material beigeDiffuse(Color(0,0,0), Color(0.69,0.065,0.065), false);
-    //Material chromium(Color(0, 0, 0), Color(0.5529,0.5529,0.5529), true); // chromium
-    //Material chromium(Color(0, 0, 0), Color(1,0.71,0.29), true, 0.2); // gold
-    //Material chromium(Color(0,0,0), Color(0.95,0.95,0.7), false);
-    Material chromium(Color(0,0,0), Color(0.95,0.4,0.45), false);
-    //Material chromium(Color(0,0,0), Color(0.95,0.95,0.7), false);
-    //Material chromium(Color(0,0,0), Color(0.95,0.015,0.005), false);
-    std::shared_ptr<Image> texture(new ImageJPEG("earth.jpg", 1.0, 75));
-    std::string current_mat = "";
+    const TexturedMaterial * current_material = scene.GetMaterial("whiteDiffuse");
     std::ifstream file(fileName);
     std::string line;
     std::vector<Vector3D> vertices; // vertex - vertices
@@ -75,12 +66,12 @@ void ModelOBJ::Import(const std::string &fileName, const Transform & transform, 
             readFaceVertex(lineStream, a, at, an);
             readFaceVertex(lineStream, b, bt, bn);
             readFaceVertex(lineStream, c, ct, cn);
-            auto triangle = std::make_unique<Triangle>(findIndex(vertices, a), findIndex(vertices, b), findIndex(vertices, c), current_mat == "mat_pi4c75f579" ? beigeDiffuse : chromium);
+            auto triangle = std::make_unique<Triangle>(findIndex(vertices, a), findIndex(vertices, b), findIndex(vertices, c), current_material->base);
             if(an && bn && cn) {
                 triangle->SetNormalInterpolator(std::make_unique<TriangleInterpolator<Vector3D>>(
                         findIndex(verticesNormal, an), findIndex(verticesNormal, bn), findIndex(verticesNormal, cn)
                 ));
-                triangle->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(std::make_unique<SpherePolarInterpolator>(
+                /*triangle->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(std::make_unique<SpherePolarInterpolator>(
                         std::make_unique<TriangleInterpolator<Vector3D>>(
                                 findIndex(verticesNormal, an), findIndex(verticesNormal, bn), findIndex(verticesNormal, cn)
                         )
@@ -89,7 +80,7 @@ void ModelOBJ::Import(const std::string &fileName, const Transform & transform, 
                         texture,
                         false,
                         0.0
-                ));
+                ));*/
                 /*triangle->SetMaterialInterpolator(std::make_unique<NormalDebugInterpolator>(std::make_unique<SpherePolarInterpolator>(
                         std::make_unique<TriangleInterpolator<Vector3D>>(
                                 findIndex(vertices, a), findIndex(vertices, b), findIndex(vertices, c)
@@ -115,8 +106,15 @@ void ModelOBJ::Import(const std::string &fileName, const Transform & transform, 
             scene.AddBody(std::move(triangle));
             //scene.AddBody(std::make_unique<Triangle>(findIndex(vertices, a), findIndex(vertices, b), findIndex(vertices, c), beigeDiffuse));
         }
+        else if(command == "mtllib") {
+            std::string mtlFileName;
+            lineStream >> mtlFileName;
+            scene.LoadMTL(mtlFileName);
+        }
         else if(command == "usemtl") {
-            lineStream >> current_mat;
+            std::string materialName;
+            lineStream >> materialName;
+            current_material = scene.GetMaterial(materialName);
         }
     }
     std::cout << "lowest:" << lowest << std::endl;

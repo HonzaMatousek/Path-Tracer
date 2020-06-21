@@ -121,7 +121,7 @@ public:
 
     [[ nodiscard ]]
     double AABBSurface() const {
-        return x * y + x * z + y * z;
+        return std::abs(x * y) + std::abs(x * z) + std::abs(y * z);
     }
 
     //static Vector3D Zero();

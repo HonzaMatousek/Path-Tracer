@@ -1,8 +1,10 @@
 #pragma once
 
 #include <vector>
+#include <map>
 #include "Body.h"
 #include "KDTree.h"
+#include "../material/TexturedMaterial.h"
 
 class Camera;
 class Image;
@@ -16,15 +18,19 @@ class Scene : public Body {
     int image_width;
     int image_height;
     int samples;
+    std::map<std::string, TexturedMaterial> materialLibrary;
 public:
     Scene();
-    Scene(std::string fileName);
+    Scene(const std::string & fileName);
     ~Scene() override;
 
     void AddBody(std::unique_ptr<Body> body);
 
     void Compile();
     void Intersect(const Ray & ray, Intersection & intersection) const override;
+
+    void LoadMTL(const std::string & fileName);
+    const TexturedMaterial * GetMaterial(const std::string & materialName) const;
 
     void Render();
     void RenderCore(std::mt19937& generator, LineEmployer & lineEmployer) const;
