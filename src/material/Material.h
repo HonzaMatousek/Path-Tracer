@@ -8,9 +8,11 @@ public:
     Color albedo;
     bool reflective = false;
     double roughness = 0.0;
+    double refractiveIndex = 1.0;
+    double opacity = 1.0;
 
     Material() = default;
-    Material(const Color & emissive, const Color & albedo, bool reflective = true, double roughness = 0.0) : emissive(emissive), albedo(albedo), reflective(reflective), roughness(roughness) {}
+    Material(const Color & emissive, const Color & albedo, bool reflective = true, double roughness = 0.0, double refractiveIndex = 1.0, double opacity = 1.0) : emissive(emissive), albedo(albedo), reflective(reflective), roughness(roughness), refractiveIndex(refractiveIndex), opacity(opacity) {}
 
     [[ nodiscard ]]
     Material   operator +  (const Material & rhs) const;

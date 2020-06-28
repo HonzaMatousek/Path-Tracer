@@ -1,0 +1,31 @@
+newmtl glass
+
+Ka 0 0 0
+Kd 1 1 1
+Km 0
+Kr 0
+Kf 1.52
+# Kf 1.00
+# Kf 1.01
+Ko 0.05
+
+newmtl quartz_glass
+
+Ka 0 0 0
+Kd 1 1 1
+Km 0
+Kr 0
+Kf 1.458
+Ko 0.01
+
+newmtl black
+
+newmtl water
+Ka 0 0 0
+Kd 1 1 1
+Km 0
+Kr 0
+# Kf 1.52
+# Kf 1.00
+Kf 1.33
+Ko 0.05

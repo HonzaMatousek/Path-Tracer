@@ -1,7 +1,7 @@
 #include "Material.h"
 
 Material Material::operator+(const Material & rhs) const {
-    return Material(emissive + rhs.emissive, (albedo + rhs.albedo) / 2, reflective, (roughness + rhs.roughness) / 2);
+    return Material(emissive + rhs.emissive, (albedo + rhs.albedo) / 2, reflective, (roughness + rhs.roughness) / 2, refractiveIndex, opacity);
 }
 
 Material & Material::operator+=(const Material & rhs) {
@@ -14,7 +14,7 @@ Material & Material::operator+=(const Material & rhs) {
 }
 
 Material Material::operator-(const Material & rhs) const {
-    return Material(emissive + rhs.emissive, (albedo - rhs.albedo) / 2, reflective, (roughness + rhs.roughness) / 2);
+    return Material(emissive + rhs.emissive, (albedo - rhs.albedo) / 2, reflective, (roughness + rhs.roughness) / 2, refractiveIndex, opacity);
 }
 
 Material & Material::operator-=(const Material & rhs) {

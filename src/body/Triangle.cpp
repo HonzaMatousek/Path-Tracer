@@ -14,7 +14,7 @@ Triangle::Triangle(const Vector3D &a, const Vector3D &b, const Vector3D &c, cons
 
 void Triangle::Intersect(const Ray & ray, Intersection & intersection) const {
     double denominator = normal.Dot(ray.direction);
-    if (denominator < -0.00000000001f) // your favorite epsilon
+    if (denominator < -0.00000000001f || denominator > 0.00000000001f) // your favorite epsilon
     {
         double t = (a - ray.origin).Dot(normal) / denominator;
         if (t >= 0) {

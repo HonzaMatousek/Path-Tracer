@@ -110,7 +110,9 @@ public:
                 material->emissiveTexture ? material->emissiveTexture->GetPixel(tex_coords.x, tex_coords.y) : material->base.emissive,
                 material->albedoTexture ? material->albedoTexture->GetPixel(tex_coords.x, tex_coords.y) : material->base.albedo,
                 material->base.reflective,
-                material->base.roughness
+                material->base.roughness,
+                material->base.refractiveIndex,
+                material->base.opacity
         );
     }
 };
