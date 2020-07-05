@@ -47,6 +47,14 @@ public:
     }
 };
 
+class PassThroughInterpolator : public Interpolator<Vector3D> {
+public:
+    [[ nodiscard ]]
+    Vector3D Interpolate(const Vector3D & coordinates) const override {
+        return coordinates;
+    }
+};
+
 class SpherePolarInterpolator : public Interpolator<Vector3D> {
     std::unique_ptr<Interpolator<Vector3D>> base;
 public:

@@ -128,10 +128,18 @@ Scene::Scene(const std::string & fileName) : Body(std::make_unique<FlatInterpola
             double x, y, z, radius;
             lineStream >> x >> y >> z >> radius;
             auto sphere = std::make_unique<Sphere>(transforms.top().Apply(Vector3D(x, y, z)), radius, current_material->base);
-            sphere->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(
-                    std::make_unique<SpherePolarInterpolator>(),
-                    current_material
-            ));
+            if(current_material->albedoTexture && current_material->albedoTexture->isSpatial()) {
+                sphere->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(
+                        std::make_unique<PassThroughInterpolator>(),
+                        current_material
+                ));
+            }
+            else {
+                sphere->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(
+                        std::make_unique<SpherePolarInterpolator>(),
+                        current_material
+                ));
+            }
             AddBody(std::move(sphere));
         }
         else if(command == "triangle") {

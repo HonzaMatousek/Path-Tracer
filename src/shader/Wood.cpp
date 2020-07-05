@@ -44,6 +44,9 @@ double Wood::getVal(double x, double y, double z, unsigned int octave) const {
 }
 
 Color Wood::GetPixel(double x, double y, double z) const {
+    x *= 10;
+    y *= 10;
+    z *= 10;
     double val = (getVal(x,y,z,0) * 4 + getVal(x,y,z,1) * 2 + getVal(x,y,z,2)) / 7;
 
     double distance = std::pow(x*x + z*z, 0.6) * 10;
