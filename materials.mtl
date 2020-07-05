@@ -40,3 +40,10 @@ Kf 1.52
 # Kf 1.00
 # Kf 1.01
 Ko 0.5
+
+newmtl marble_procedural
+
+Ka 0 0 0
+shader_Kd marble
+Km 0
+Kr 0

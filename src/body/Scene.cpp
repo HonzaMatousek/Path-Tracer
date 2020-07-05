@@ -10,6 +10,7 @@
 #include "Triangle.h"
 #include "../math/Transform.h"
 #include "../shader/Wood.h"
+#include "../shader/Marble.h"
 #include <fstream>
 #include <sstream>
 #include <map>
@@ -278,6 +279,9 @@ void Scene::LoadMTL(const std::string & fileName) {
             lineStream >> texturePath;
             if(texturePath == "wood") {
                 current_material->albedoTexture = std::make_shared<Wood>();
+            }
+            else if(texturePath == "marble") {
+                current_material->albedoTexture = std::make_shared<Marble>();
             }
         }
     }

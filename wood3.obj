@@ -1,6 +1,6 @@
-mtllib wood.mtl
+mtllib materials.mtl
 
-usemtl wood_procedural
+usemtl marble_procedural
 
 v -20 0 -20
 v -20 0 20

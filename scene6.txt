@@ -7,8 +7,10 @@ model wood3.obj
 pop_transform
 pop_transform
 
+load_material_library materials.mtl
+
 move 0 0 -5
-current_material wood_procedural
+current_material marble_procedural
 sphere 0 1 0 1
 pop_transform
 
