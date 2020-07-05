@@ -1,0 +1,20 @@
+# scena, wood testing
+
+# import model into scene
+move 0 -1 -2
+rotate_y 0
+model wood3.obj
+pop_transform
+pop_transform
+
+move 5 5 -2
+current_material whiteLight
+# sphere 0 0 0 0.5
+pop_transform
+
+background_texture sky.jpg
+
+# perspective camera, from, direction, up vector, image width, image height, fov
+#camera       0 0.3 4        0 0 -1           0 1 0         1920          1080         60
+camera       0 40 0        0 -1 0           0 0 1         1920          1080         60
+output       drevena-scena-01.jpg     10    1

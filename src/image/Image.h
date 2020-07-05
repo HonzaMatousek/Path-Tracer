@@ -14,7 +14,11 @@ public:
     Image(int width, int height);
 
     void AddPixel(int x, int y, const Color & color);
-    Color GetPixel(double x, double y) const;
+
+    virtual Color GetPixel(double x, double y, double z = 0) const;
+
+    [[ nodiscard ]]
+    virtual bool isSpatial() const { return false; }
 
     virtual void Save(const std::string & fileName, double exposition) const = 0;
 };

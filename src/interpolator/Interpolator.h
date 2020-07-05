@@ -107,8 +107,8 @@ public:
     Material Interpolate(const Vector3D & coordinates) const override {
         Vector3D tex_coords(base->Interpolate(coordinates));
         return Material(
-                material->emissiveTexture ? material->emissiveTexture->GetPixel(tex_coords.x, tex_coords.y) : material->base.emissive,
-                material->albedoTexture ? material->albedoTexture->GetPixel(tex_coords.x, tex_coords.y) : material->base.albedo,
+                material->emissiveTexture ? material->emissiveTexture->GetPixel(tex_coords.x, tex_coords.y, tex_coords.z) : material->base.emissive,
+                material->albedoTexture ? material->albedoTexture->GetPixel(tex_coords.x, tex_coords.y, tex_coords.z) : material->base.albedo,
                 material->base.reflective,
                 material->base.roughness,
                 material->base.refractiveIndex,

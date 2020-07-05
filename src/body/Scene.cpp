@@ -9,6 +9,7 @@
 #include "../image/ImageJPEG.h"
 #include "Triangle.h"
 #include "../math/Transform.h"
+#include "../shader/Wood.h"
 #include <fstream>
 #include <sstream>
 #include <map>
@@ -263,6 +264,13 @@ void Scene::LoadMTL(const std::string & fileName) {
             std::string texturePath;
             lineStream >> texturePath;
             current_material->roughnessTexture = std::make_shared<ImageJPEG>(texturePath, 1, 95);
+        }
+        else if(command == "shader_Kd") { // albedo texture
+            std::string texturePath;
+            lineStream >> texturePath;
+            if(texturePath == "wood") {
+                current_material->albedoTexture = std::make_shared<Wood>();
+            }
         }
     }
 }
