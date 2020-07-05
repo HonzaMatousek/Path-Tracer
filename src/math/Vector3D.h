@@ -11,7 +11,7 @@ public:
     double y;
     double z;
 
-    Vector3D(double x, double y, double z) : x(x), y(y), z(z) {}
+    Vector3D(double x = 0, double y = 0, double z = 0) : x(x), y(y), z(z) {}
 
     [[ nodiscard ]]
     Vector3D   operator +  (const Vector3D & rhs) const {

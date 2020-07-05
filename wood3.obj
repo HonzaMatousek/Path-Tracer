@@ -1,6 +1,6 @@
 mtllib materials.mtl
 
-usemtl marble_procedural
+usemtl voronoi_procedural
 
 v -20 0 -20
 v -20 0 20

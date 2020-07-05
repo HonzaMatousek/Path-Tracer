@@ -11,6 +11,7 @@
 #include "../math/Transform.h"
 #include "../shader/Wood.h"
 #include "../shader/Marble.h"
+#include "../shader/Voronoi.h"
 #include <fstream>
 #include <sstream>
 #include <map>
@@ -282,6 +283,9 @@ void Scene::LoadMTL(const std::string & fileName) {
             }
             else if(texturePath == "marble") {
                 current_material->albedoTexture = std::make_shared<Marble>();
+            }
+            else if(texturePath == "voronoi") {
+                current_material->albedoTexture = std::make_shared<Voronoi>();
             }
         }
     }

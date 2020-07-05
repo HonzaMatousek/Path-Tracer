@@ -47,3 +47,10 @@ Ka 0 0 0
 shader_Kd marble
 Km 0
 Kr 0
+
+newmtl voronoi_procedural
+
+Ka 0 0 0
+shader_Kd voronoi
+Km 0
+Kr 0

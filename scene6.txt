@@ -10,7 +10,7 @@ pop_transform
 load_material_library materials.mtl
 
 move 0 0 -5
-current_material marble_procedural
+current_material voronoi_procedural
 sphere 0 1 0 1
 pop_transform
 
@@ -21,4 +21,4 @@ background_texture sky.jpg
 # output       drevena-scena-01.jpg     10    1
 
 camera       0 1.3 4        0 0 -1           0 1 0         1920          1080         60
-output       drevena-scena-02.jpg     10    1
+output       drevena-scena-03.jpg     10    1
