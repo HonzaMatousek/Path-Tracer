@@ -24,23 +24,24 @@ KDTree::KDTree(const std::vector<Body*> &bodies, const Vector3D &lowerCorner,
     double bestPrice = (upperCorner - lowerCorner).AABBSurface() * bodies.size();
     Vector3D::Axis bestAxis = &Vector3D::x;
     double bestSplit = 0;
+    constexpr double eps = 0.00001;
     for(auto axis : Vector3D::axes) {
         std::map<double, SplittingInfo> splittingInfos;
         for (auto &body : bodies) {
-            splittingInfos[body->lowerCorner.*axis].lowerChange += 1;
-            splittingInfos[body->upperCorner.*axis].upperChange += 1;
+            splittingInfos[body->lowerCorner.*axis - eps].lowerChange += 1;
+            splittingInfos[body->upperCorner.*axis + eps].upperChange += 1;
         }
         size_t lowerCount = 0;
         size_t upperCount = bodies.size();
         for (auto & [ split, splittingInfo ] : splittingInfos) {
-            lowerCount += splittingInfo.lowerChange;
+            upperCount -= splittingInfo.upperChange;
             double price = Price(bodies, axis, split, lowerCount, upperCount);
             if(price < bestPrice) {
                 bestAxis = axis;
                 bestSplit = split;
                 bestPrice = price;
             }
-            upperCount -= splittingInfo.upperChange;
+            lowerCount += splittingInfo.lowerChange;
         }
     }
     //
