@@ -1,20 +1,25 @@
 # import model into scene
 move 0 -1 -2
 rotate_y 0
-# model wood2.obj
+model wood2.obj
 pop_transform
 pop_transform
 
 move 0 0 -2
 load_material_library materials.mtl
-current_material glass
-sphere 0 0 0 1
-# move 0 -1.5 0
+current_material quartz_glass
+# sphere 0 0 0 1
+move 0.2 -0.7 0
 # rotate_y 1
-# model cube.obj
+model bunny.obj
 # model stick.obj
 # pop_transform
-# pop_transform
+pop_transform
+pop_transform
+
+move 5 5 -2
+current_material whiteLight
+sphere 0 0 0 0.5
 pop_transform
 
 # choose current material
@@ -39,5 +44,5 @@ pop_transform
 background_texture sky.jpg
 
 # perspective camera, from, direction, up vector, image width, image height, fov
-camera       0 0 2        0 0 -1           0 1 0         1920          1080         60
-output       sklenena01.jpg     10    1
+camera       0 0.3 4        0 0 -1           0 1 0         1920          1080         60
+output       sklenena04.jpg     600    1

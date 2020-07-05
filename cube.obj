@@ -1,5 +1,4 @@
-mtllib materials.mtl
-usemtl water
+usemtl glass
 
 v -0.500000 -0.500000 0.500000
 v 0.500000 -0.500000 0.500000

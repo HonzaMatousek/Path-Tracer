@@ -57,6 +57,7 @@ Ray Intersection::Reflect(const Ray &incoming, double& powerMultiplier, double& 
                 mi = material.refractiveIndex;
                 refractiveIndex = 1;
                 normal *= -1;
+                powerMultiplier *= pow((1 - material.opacity), t);
             }
             else {
                 // going from outside in
@@ -66,6 +67,7 @@ Ray Intersection::Reflect(const Ray &incoming, double& powerMultiplier, double& 
             }
             double sini = sqrt(1 - ni*ni);
             if(sini > 1 / mi) {
+                refractiveIndex = material.refractiveIndex;
                 Vector3D idealReflection = incoming.direction - normal * (2 * incoming.direction.Dot(normal));
                 return Ray(incoming.Point(t - 0.00000001), idealReflection);
             }

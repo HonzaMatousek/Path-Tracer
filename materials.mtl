@@ -1,7 +1,7 @@
 newmtl glass
 
 Ka 0 0 0
-Kd 1 1 1
+Kd 0.1 1 0.05
 Km 0
 Kr 0
 Kf 1.52
@@ -29,3 +29,14 @@ Kr 0
 # Kf 1.00
 Kf 1.33
 Ko 0.05
+
+newmtl smoke_glass
+
+Ka 0 0 0
+Kd 1 1 1
+Km 0
+Kr 0.001
+Kf 1.52
+# Kf 1.00
+# Kf 1.01
+Ko 0.5

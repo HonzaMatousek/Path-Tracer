@@ -1,6 +1,6 @@
-mtllib materials.mtl
+mtllib wood.mtl
 
-usemtl water
+usemtl wood
 
 v -20 0 -20
 v -20 0 20
