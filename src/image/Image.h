@@ -7,6 +7,8 @@
 class Image {
 protected:
     std::vector<std::vector<Color>> pixels;
+    bool repeatX = true;
+    bool repeatY = true;
 public:
     int width;
     int height;

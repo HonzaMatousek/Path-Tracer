@@ -4,10 +4,6 @@
 #include <algorithm>
 #include "Voronoi.h"
 
-inline double lerp(double a0, double a1, double w) {
-    return (1.0f - w)*a0 + w*a1;
-}
-
 double Voronoi::getVal(double x, double y, double z, unsigned int octave) const {
     x *= 1u << octave;
     y *= 1u << octave;
