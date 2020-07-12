@@ -54,6 +54,21 @@ public:
     explicit PlaneNormalInterpolator(const Vector3D & a, const Vector3D & b, const Vector3D & c) : FlatInterpolator(Transform(a, b, c)) {}
 };
 
+class PlaneNormalRoundingInterpolator : public Interpolator<Transform> {
+    std::unique_ptr<Interpolator<Transform>> base;
+    std::unique_ptr<TriangleInterpolator<Vector3D>> triangleInterpolator;
+public:
+    PlaneNormalRoundingInterpolator(std::unique_ptr<Interpolator<Transform>> base, const Vector3D & a, const Vector3D & b, const Vector3D & c) : base(std::move(base)), triangleInterpolator(std::make_unique<TriangleInterpolator<Vector3D>>(a, b, c)) {}
+
+    [[ nodiscard ]]
+    Transform Interpolate(const Vector3D & coordinates) const override {
+        auto tr = base->Interpolate(coordinates);
+        auto n = triangleInterpolator->Interpolate(coordinates).Normalize();
+        tr.ReplaceThird(n);
+        return tr;
+    }
+};
+
 class PassThroughInterpolator : public Interpolator<Vector3D> {
 public:
     [[ nodiscard ]]

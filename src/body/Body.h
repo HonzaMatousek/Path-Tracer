@@ -44,6 +44,10 @@ public:
         this->normalInterpolator.swap(normalInterpolator);
     }
 
+    void SwapNormalInterpolator(std::unique_ptr<Interpolator<Transform>> & normalInterpolator) {
+        std::swap(this->normalInterpolator, normalInterpolator);
+    }
+
     void SetMaterialInterpolator(std::unique_ptr<Interpolator<Material>> && materialInterpolator) {
         this->materialInterpolator.swap(materialInterpolator);
     }

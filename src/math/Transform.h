@@ -112,4 +112,10 @@ public:
                 matrix[2][0] * rhs.x + matrix[2][1] * rhs.y + matrix[2][2] * rhs.z
         );
     }
+
+    void ReplaceThird(const Vector3D & v) {
+        matrix[0][2] = v.x;
+        matrix[1][2] = v.y;
+        matrix[2][2] = v.z;
+    }
 };

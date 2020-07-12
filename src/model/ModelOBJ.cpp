@@ -64,11 +64,6 @@ void ModelOBJ::Import(const std::string &fileName, const Transform & transform, 
             readFaceVertex(lineStream, b, bt, bn);
             readFaceVertex(lineStream, c, ct, cn);
             auto triangle = std::make_unique<Triangle>(findIndex(vertices, a), findIndex(vertices, b), findIndex(vertices, c), current_material->base);
-            if(an && bn && cn) {
-                /*triangle->SetNormalInterpolator(std::make_unique<TriangleInterpolator<Vector3D>>(
-                        findIndex(verticesNormal, an), findIndex(verticesNormal, bn), findIndex(verticesNormal, cn)
-                ));*/
-            }
             if(at && bt && ct) {
                 triangle->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(
                         std::make_unique<TriangleInterpolator<Vector3D>>(
@@ -94,6 +89,14 @@ void ModelOBJ::Import(const std::string &fileName, const Transform & transform, 
 
                 triangle->SetNormalInterpolator(std::make_unique<PlaneNormalInterpolator>(
                         tangent.Normalize(), bitangent.Normalize(), (findIndex(vertices, b) - findIndex(vertices, a)).Cross(findIndex(vertices, c) - findIndex(vertices, a)).Normalize()
+                ));
+            }
+            if(an && bn && cn) {
+                std::unique_ptr<Interpolator<Transform>> originalNormalInterpolator;
+                triangle->SwapNormalInterpolator(originalNormalInterpolator);
+                triangle->SetNormalInterpolator(std::make_unique<PlaneNormalRoundingInterpolator>(
+                        std::move(originalNormalInterpolator),
+                        findIndex(verticesNormal, an), findIndex(verticesNormal, bn), findIndex(verticesNormal, cn)
                 ));
             }
             scene.AddBody(std::move(triangle));
