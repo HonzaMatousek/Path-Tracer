@@ -5,6 +5,7 @@
 #include "../material/Material.h"
 #include "../image/Image.h"
 #include "../material/TexturedMaterial.h"
+#include "../math/Transform.h"
 
 template <typename T>
 class Interpolator {
@@ -39,12 +40,17 @@ public:
     }
 };
 
-class NormalizeInterpolator : public Interpolator<Vector3D> {
+class NormalizeInterpolator : public Interpolator<Transform> {
 public:
     [[ nodiscard ]]
-    Vector3D Interpolate(const Vector3D & coordinates) const override {
-        return Vector3D(coordinates).Normalize();
+    Transform Interpolate(const Vector3D & coordinates) const override {
+        return Transform::SomeBasisForZ(Vector3D(coordinates).Normalize());
     }
+};
+
+class PlaneNormalInterpolator : public FlatInterpolator<Transform> {
+public:
+    explicit PlaneNormalInterpolator(const Vector3D & originalNormal) : FlatInterpolator(Transform::SomeBasisForZ(originalNormal)) {}
 };
 
 class PassThroughInterpolator : public Interpolator<Vector3D> {
@@ -120,7 +126,8 @@ public:
                 material->base.reflective,
                 material->base.roughness,
                 material->base.refractiveIndex,
-                material->base.opacity
+                material->base.opacity,
+                material->normalTexture ? material->normalTexture->GetPixel(tex_coords.x, tex_coords.y, tex_coords.z).ToNormal() : material->base.normal
         );
     }
 };

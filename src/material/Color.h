@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../math/Vector3D.h"
+
 class Color {
 public:
     double r;
@@ -40,4 +42,6 @@ public:
     void WriteIntoByteBufferBGR(unsigned char * buffer, double exposition) const;
 
     static Color ReadFromByteBufferRGB(unsigned char * buffer, double exposition);
+
+    Vector3D ToNormal() const;
 };

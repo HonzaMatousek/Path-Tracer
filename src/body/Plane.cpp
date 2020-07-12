@@ -1,6 +1,6 @@
 #include "Plane.h"
 
-Plane::Plane(const Vector3D &origin, const Vector3D &normal, const Material &material) : Body(std::make_unique<FlatInterpolator<Material>>(material), std::make_unique<FlatInterpolator<Vector3D>>(normal)), origin(origin), normal(normal) {}
+Plane::Plane(const Vector3D &origin, const Vector3D &normal, const Material &material) : Body(std::make_unique<FlatInterpolator<Material>>(material), std::make_unique<PlaneNormalInterpolator>(normal)), origin(origin), normal(normal) {}
 
 void Plane::Intersect(const Ray & ray, Intersection & intersection) const {
     double denominator = normal.Dot(ray.direction);

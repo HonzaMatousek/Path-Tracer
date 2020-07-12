@@ -4,7 +4,7 @@
 
 #include "Triangle.h"
 
-Triangle::Triangle(const Vector3D &a, const Vector3D &b, const Vector3D &c, const Material &material) : Body(std::make_unique<FlatInterpolator<Material>>(material), std::make_unique<FlatInterpolator<Vector3D>>((b - a).Cross(c - a).Normalize()), a.Min(b).Min(c), a.Max(b).Max(c)), a(a), b(b), c(c), u(b - a), v(c - a), normal(u.Cross(v)) {
+Triangle::Triangle(const Vector3D &a, const Vector3D &b, const Vector3D &c, const Material &material) : Body(std::make_unique<FlatInterpolator<Material>>(material), std::make_unique<PlaneNormalInterpolator>((b - a).Cross(c - a).Normalize()), a.Min(b).Min(c), a.Max(b).Max(c)), a(a), b(b), c(c), u(b - a), v(c - a), normal(u.Cross(v)) {
     this->normal.Normalize();
     dotUU = u.Dot(u);
     dotUV = u.Dot(v);

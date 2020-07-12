@@ -11,5 +11,6 @@ public:
     std::shared_ptr<Image> albedoTexture;
     std::shared_ptr<Image> metalnessTexture;
     std::shared_ptr<Image> roughnessTexture;
+    std::shared_ptr<Image> normalTexture;
     Material GetMaterial(double u, double v) const;
 };

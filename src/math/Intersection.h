@@ -35,5 +35,5 @@ public:
     Material GetMaterial() const;
 
     [[ nodiscard ]]
-    Vector3D GetNormal() const;
+    Vector3D GetNormal(const Vector3D & materialNormal) const;
 };

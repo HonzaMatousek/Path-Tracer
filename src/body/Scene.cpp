@@ -268,12 +268,17 @@ void Scene::LoadMTL(const std::string & fileName) {
         else if(command == "map_Km") { // metalness texture
             std::string texturePath;
             lineStream >> texturePath;
-            current_material->metalnessTexture = std::make_shared<ImageJPEG>(texturePath, 1, 95);
+            current_material->metalnessTexture = std::make_shared<ImageJPEG>(texturePath, 0, 95);
         }
         else if(command == "map_Kr") { // roughness texture
             std::string texturePath;
             lineStream >> texturePath;
-            current_material->roughnessTexture = std::make_shared<ImageJPEG>(texturePath, 1, 95);
+            current_material->roughnessTexture = std::make_shared<ImageJPEG>(texturePath, 0, 95);
+        }
+        else if(command == "map_Kn") { // roughness texture
+            std::string texturePath;
+            lineStream >> texturePath;
+            current_material->normalTexture = std::make_shared<ImageJPEG>(texturePath, 0, 95);
         }
         else if(command == "shader_Kd") { // albedo texture
             std::string texturePath;

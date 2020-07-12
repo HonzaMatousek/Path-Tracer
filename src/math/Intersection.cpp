@@ -6,6 +6,10 @@
 inline std::uniform_real_distribution<double> d(0.0, 1.0);
 
 Vector3D RandomDirection(const Vector3D & usualDirection, std::mt19937 & generator, double spread) {
+    if(spread == 0) {
+        return usualDirection;
+    }
+
     // generate random variables
     double u = d(generator);
     double v = d(generator);
@@ -19,29 +23,12 @@ Vector3D RandomDirection(const Vector3D & usualDirection, std::mt19937 & generat
 
     Vector3D randomDirection (x, y, sqrt(1 - u * spread));
 
-    // reorient (0, 0, 1) to usualDirection
-    if(usualDirection == Vector3D(0, 0, -1)) {
-        randomDirection.z *= -1;
-    }
-    else if(usualDirection != Vector3D(0,0,1)) {
-        // create orthonormal basis (a|b|usualDirection)
-        auto a = usualDirection.Cross(Vector3D(0,0,1));
-        a.Normalize();
-        auto b = usualDirection.Cross(a);
-        // rotate: (a|b|usualDirection) . randomDirection
-        randomDirection = Vector3D(
-                a.x * randomDirection.x + b.x * randomDirection.y + usualDirection.x * randomDirection.z,
-                a.y * randomDirection.x + b.y * randomDirection.y + usualDirection.y * randomDirection.z,
-                a.z * randomDirection.x + b.z * randomDirection.y + usualDirection.z * randomDirection.z
-        );
-    }
-
-    return randomDirection;
+    return Transform::SomeBasisForZ(usualDirection).ApplyWithoutTranslation(randomDirection);
 }
 
 Ray Intersection::Reflect(const Ray &incoming, double& powerMultiplier, double& refractiveIndex, std::mt19937 & generator) {
     auto material = GetMaterial();
-    auto normal = RandomDirection(GetNormal(), generator, material.roughness);
+    auto normal = RandomDirection(GetNormal(material.normal), generator, material.roughness);
     if(material.reflective) {
         //Vector3D normal = RandomDirection(normal, generator, 0.0);
         Vector3D idealReflection = incoming.direction - normal * (2 * incoming.direction.Dot(normal));
@@ -87,6 +74,6 @@ Material Intersection::GetMaterial() const {
     return body->GetMaterial(localCoordinates);
 }
 
-Vector3D Intersection::GetNormal() const {
-    return body->GetNormal(localCoordinates);
+Vector3D Intersection::GetNormal(const Vector3D & materialNormal) const {
+    return body->GetNormal(localCoordinates).ApplyWithoutTranslation(materialNormal);
 }

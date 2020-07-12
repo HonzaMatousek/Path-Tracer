@@ -26,6 +26,25 @@ public:
         matrix[3][3] = m33;
     }
 
+    Transform(const Vector3D & a, const Vector3D & b, const Vector3D & c) {
+        matrix[0][0] = a.x;
+        matrix[0][1] = b.x;
+        matrix[0][2] = c.x;
+        matrix[0][3] = 0;
+        matrix[1][0] = a.y;
+        matrix[1][1] = b.y;
+        matrix[1][2] = c.y;
+        matrix[1][3] = 0;
+        matrix[2][0] = a.z;
+        matrix[2][1] = b.z;
+        matrix[2][2] = c.z;
+        matrix[2][3] = 0;
+        matrix[3][0] = 0;
+        matrix[3][1] = 0;
+        matrix[3][2] = 0;
+        matrix[3][3] = 1;
+    }
+
     static Transform Translation(double x, double y, double z) {
         return Transform(1.0, 0.0, 0.0, x, 0.0, 1.0, 0.0, y, 0.0, 0.0, 1.0, z, 0.0, 0.0, 0.0, 1.0);
     }
@@ -40,6 +59,19 @@ public:
 
     static Transform RotateY(double angle) {
         return Transform(cos(angle), 0.0, -sin(angle), 0.0, 0.0, 1.0, 0.0, 0.0, sin(angle), 0.0, cos(angle), 0.0, 0.0, 0.0, 0.0, 1.0);
+    }
+
+    static Transform SomeBasisForZ(const Vector3D & originalNormal) {
+        if(originalNormal == Vector3D(0,0,1)) {
+            return Transform(Vector3D(1,0,0), Vector3D(0,1,0), originalNormal);
+        }
+        if(originalNormal == Vector3D(0,0,-1)) {
+            return Transform(Vector3D(1,0,0), Vector3D(0,-1,0), originalNormal);
+        }
+        auto a = originalNormal.Cross(Vector3D(0,0,1));
+        a.Normalize();
+        auto b = originalNormal.Cross(a);
+        return Transform(a, b, originalNormal);
     }
 
     Transform operator*(const Transform rhs) const {

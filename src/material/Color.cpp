@@ -78,6 +78,12 @@ Color &Color::operator/=(const Color & rhs) {
 }
 
 void Color::WriteIntoByteBufferRGB(unsigned char *buffer, double exposition) const {
+    if(exposition == 0) {
+        buffer[0] = (unsigned char)std::clamp<double>(r, 0, 255);
+        buffer[1] = (unsigned char)std::clamp<double>(g, 0, 255);
+        buffer[2] = (unsigned char)std::clamp<double>(b, 0, 255);
+        return;
+    }
     // use physically correct exposition (Reinhard's tone mapping?)
     buffer[0] = (unsigned char)std::clamp<double>(pow(r * exposition, 1/2.2) * 255, 0, 255);
     buffer[1] = (unsigned char)std::clamp<double>(pow(g * exposition, 1/2.2) * 255, 0, 255);
@@ -85,6 +91,12 @@ void Color::WriteIntoByteBufferRGB(unsigned char *buffer, double exposition) con
 }
 
 void Color::WriteIntoByteBufferBGR(unsigned char *buffer, double exposition) const {
+    if(exposition == 0) {
+        buffer[2] = (unsigned char)std::clamp<double>(r, 0, 255);
+        buffer[1] = (unsigned char)std::clamp<double>(g, 0, 255);
+        buffer[0] = (unsigned char)std::clamp<double>(b, 0, 255);
+        return;
+    }
     // use physically correct exposition (Reinhard's tone mapping?)
     buffer[2] = (unsigned char)std::clamp<double>(pow(r * exposition, 1/2.2) * 255, 0, 255);
     buffer[1] = (unsigned char)std::clamp<double>(pow(g * exposition, 1/2.2) * 255, 0, 255);
@@ -92,9 +104,24 @@ void Color::WriteIntoByteBufferBGR(unsigned char *buffer, double exposition) con
 }
 
 Color Color::ReadFromByteBufferRGB(unsigned char *buffer, double exposition) {
+    if(exposition == 0) {
+        return Color(
+                buffer[0] / 255.0,
+                buffer[1] / 255.0,
+                buffer[2] / 255.0
+        );
+    }
     return Color(
             pow(buffer[0] / 255.0, 2.2) / exposition,
             pow(buffer[1] / 255.0, 2.2) / exposition,
             pow(buffer[2] / 255.0, 2.2) / exposition
+    );
+}
+
+Vector3D Color::ToNormal() const {
+    return Vector3D(
+            (r * 2) - 1,
+            (g * 2) - 1,
+            (b * 2) - 1
     );
 }

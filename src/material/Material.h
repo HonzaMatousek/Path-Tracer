@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Color.h"
+#include "../math/Vector3D.h"
 
 class Material {
 public:
@@ -11,8 +12,10 @@ public:
     double refractiveIndex = 1.0;
     double opacity = 1.0;
 
+    Vector3D normal = Vector3D(0,0,1);
+
     Material() = default;
-    Material(const Color & emissive, const Color & albedo, bool reflective = true, double roughness = 0.0, double refractiveIndex = 1.0, double opacity = 1.0) : emissive(emissive), albedo(albedo), reflective(reflective), roughness(roughness), refractiveIndex(refractiveIndex), opacity(opacity) {}
+    Material(const Color & emissive, const Color & albedo, bool reflective = true, double roughness = 0.0, double refractiveIndex = 1.0, double opacity = 1.0, const Vector3D & normal = Vector3D(0,0,1)) : emissive(emissive), albedo(albedo), reflective(reflective), roughness(roughness), refractiveIndex(refractiveIndex), opacity(opacity), normal(normal) {}
 
     [[ nodiscard ]]
     Material   operator +  (const Material & rhs) const;

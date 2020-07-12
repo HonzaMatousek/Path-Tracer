@@ -65,9 +65,9 @@ void ModelOBJ::Import(const std::string &fileName, const Transform & transform, 
             readFaceVertex(lineStream, c, ct, cn);
             auto triangle = std::make_unique<Triangle>(findIndex(vertices, a), findIndex(vertices, b), findIndex(vertices, c), current_material->base);
             if(an && bn && cn) {
-                triangle->SetNormalInterpolator(std::make_unique<TriangleInterpolator<Vector3D>>(
+                /*triangle->SetNormalInterpolator(std::make_unique<TriangleInterpolator<Vector3D>>(
                         findIndex(verticesNormal, an), findIndex(verticesNormal, bn), findIndex(verticesNormal, cn)
-                ));
+                ));*/
             }
             if(at && bt && ct) {
                 triangle->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(

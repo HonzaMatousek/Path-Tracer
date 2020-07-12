@@ -4,18 +4,19 @@
 #include "../math/Intersection.h"
 #include "../material/Material.h"
 #include "../interpolator/Interpolator.h"
+#include "../math/Transform.h"
 
 #include <memory>
 
 class Body {
 protected:
     std::unique_ptr<Interpolator<Material>> materialInterpolator;
-    std::unique_ptr<Interpolator<Vector3D>> normalInterpolator;
+    std::unique_ptr<Interpolator<Transform>> normalInterpolator;
 public:
     const Vector3D lowerCorner;
     const Vector3D upperCorner;
 
-    explicit Body(std::unique_ptr<Interpolator<Material>> && materialInterpolator = nullptr, std::unique_ptr<Interpolator<Vector3D>> && normalInterpolator = std::make_unique<NormalizeInterpolator>(), const Vector3D & lowerCorner = Vector3D(0,0,0), const Vector3D & upperCorner = Vector3D(0,0,0)) : materialInterpolator(std::move(materialInterpolator)), normalInterpolator(std::move(normalInterpolator)), lowerCorner(lowerCorner), upperCorner(upperCorner) {}
+    explicit Body(std::unique_ptr<Interpolator<Material>> && materialInterpolator = nullptr, std::unique_ptr<Interpolator<Transform>> && normalInterpolator = std::make_unique<NormalizeInterpolator>(), const Vector3D & lowerCorner = Vector3D(0,0,0), const Vector3D & upperCorner = Vector3D(0,0,0)) : materialInterpolator(std::move(materialInterpolator)), normalInterpolator(std::move(normalInterpolator)), lowerCorner(lowerCorner), upperCorner(upperCorner) {}
     virtual ~Body() = default;
 
     virtual void Intersect(const Ray & ray, Intersection & intersection) const = 0;
@@ -35,11 +36,11 @@ public:
     }
 
     [[ nodiscard ]]
-    Vector3D GetNormal(const Vector3D & localCoordinates) const {
+    Transform GetNormal(const Vector3D & localCoordinates) const {
         return normalInterpolator->Interpolate(localCoordinates);
     }
 
-    void SetNormalInterpolator(std::unique_ptr<Interpolator<Vector3D>> && normalInterpolator) {
+    void SetNormalInterpolator(std::unique_ptr<Interpolator<Transform>> && normalInterpolator) {
         this->normalInterpolator.swap(normalInterpolator);
     }
 
