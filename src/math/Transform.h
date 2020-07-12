@@ -70,8 +70,8 @@ public:
         }
         auto a = originalNormal.Cross(Vector3D(0,0,1));
         a.Normalize();
-        auto b = originalNormal.Cross(a);
-        return Transform(a, b, originalNormal);
+        auto b = a.Cross(originalNormal);
+        return Transform(b, a, originalNormal);
     }
 
     Transform operator*(const Transform rhs) const {

@@ -1,24 +1,27 @@
 # scena, wood testing
 
 # import model into scene
-move 0 -1 -2
+move 0 0 -2
 rotate_y 0
-model normal-plane-round.obj
+model normal-plane.obj
 pop_transform
 pop_transform
 
-load_material_library materials.mtl
+# load_material_library materials.mtl
 
-move 0 0 -5
-current_material whiteLight
+move 0 0 -3
+current_material stone01
 sphere 0 1 0 1
+current_material whiteLight
+sphere 4 2 0 1
 pop_transform
 
 background_texture sky.jpg
 
 # perspective camera, from, direction, up vector, image width, image height, fov
-camera       0 40 0        0 -1 0           0 0 1         1920          1080         60
-output       normal-mapovani-04.jpg     100    1
+# camera       0 40 0        0 -1 0           0 0 1         1920          1080         60
+# output       normal-mapovani-06.jpg     100    1
 
-camera       0 1 4        0 0 -1           0 1 0         1920          1080         60
-output       normal-mapovani-03.jpg     100    1
+# camera       0 1 4        0 0 -1           0 1 0         1920          1080         60
+camera       0 1 -10        0 0 1           0 1 0         1920          1080         60
+output       normal-mapovani-05b.jpg     100    1
