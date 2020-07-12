@@ -76,6 +76,25 @@ void ModelOBJ::Import(const std::string &fileName, const Transform & transform, 
                         ),
                         current_material
                 ));
+                auto edge1 = findIndex(vertices, b) - findIndex(vertices, a);
+                auto edge2 = findIndex(vertices, c) - findIndex(vertices, a);
+                auto deltaUV1 = findIndex(verticesTexture, bt) - findIndex(verticesTexture, at);
+                auto deltaUV2 = findIndex(verticesTexture, ct) - findIndex(verticesTexture, at);
+                double f = 1.0 / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+                Vector3D tangent;
+                tangent.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
+                tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
+                tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+
+                Vector3D bitangent;
+                bitangent.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
+                bitangent.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
+                bitangent.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
+
+                triangle->SetNormalInterpolator(std::make_unique<PlaneNormalInterpolator>(
+                        tangent.Normalize(), bitangent.Normalize(), (findIndex(vertices, b) - findIndex(vertices, a)).Cross(findIndex(vertices, c) - findIndex(vertices, a)).Normalize()
+                ));
             }
             scene.AddBody(std::move(triangle));
         }

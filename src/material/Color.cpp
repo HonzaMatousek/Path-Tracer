@@ -121,7 +121,7 @@ Color Color::ReadFromByteBufferRGB(unsigned char *buffer, double exposition) {
 Vector3D Color::ToNormal() const {
     return Vector3D(
             (r * 2) - 1,
-            -((g * 2) - 1),
+            (g * 2) - 1,
             (b * 2) - 1
     );
 }

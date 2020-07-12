@@ -51,6 +51,7 @@ public:
 class PlaneNormalInterpolator : public FlatInterpolator<Transform> {
 public:
     explicit PlaneNormalInterpolator(const Vector3D & originalNormal) : FlatInterpolator(Transform::SomeBasisForZ(originalNormal)) {}
+    explicit PlaneNormalInterpolator(const Vector3D & a, const Vector3D & b, const Vector3D & c) : FlatInterpolator(Transform(a, b, c)) {}
 };
 
 class PassThroughInterpolator : public Interpolator<Vector3D> {
