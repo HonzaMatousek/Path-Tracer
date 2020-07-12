@@ -1,0 +1,10 @@
+newmtl stone01
+
+Ka 0 0 0
+Kd 1 1 0
+map_Kd ft_stone01_c.jpg
+map_Kn ft_stone01_n.jpg
+Km 0
+Kr 0
+Kf 1.52
+Ko 1
