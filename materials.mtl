@@ -29,7 +29,18 @@ Kr 0
 # Kf 1.52
 # Kf 1.00
 Kf 1.33
-Ko 0.05
+Ko 0.1
+
+newmtl water_wavy
+Ka 0 0 0
+Kd 1 1 1
+map_Kn water_normal.jpg
+Km 0
+Kr 0
+# Kf 1.52
+# Kf 1.00
+Kf 1.33
+Ko 0.1
 
 newmtl smoke_glass
 
@@ -119,6 +130,17 @@ Kd 1 0.7668 0.3344
 map_Kn earth_normal.jpg
 Km 1
 Kr 0.01
+Kf 100000000
+
+newmtl gold
+
+Ka 0 0 0
+# Kd 1 0.8863 0.6078
+Kd 1 0.7668 0.3344
+# map_Kn earth_normal.jpg
+Km 1
+Kr 0.00
+Kf 5
 
 newmtl matte
 
@@ -126,3 +148,13 @@ Ka 0 0 0
 Kd 0.5 0.5 0.5
 Km 1
 Kr 0.0001
+
+newmtl plastic_red
+
+Ka 0 0 0
+# Kd 0.95 0.05 0.0
+Kd 1 1 1
+Km 0
+Kr 0
+Kf 1.47
+Ko 1
