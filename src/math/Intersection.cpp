@@ -26,7 +26,7 @@ Vector3D RandomDirection(const Vector3D & usualDirection, std::mt19937 & generat
     return Transform::SomeBasisForZ(usualDirection).ApplyWithoutTranslation(randomDirection);
 }
 
-Ray Intersection::Reflect(const Ray &incoming, double& powerMultiplier, double& refractiveIndex, std::mt19937 & generator) {
+Ray Intersection::Reflect(const Ray &incoming, Color& powerMultiplier, double& refractiveIndex, Color& attenuation, std::mt19937 & generator) {
     auto material = GetMaterial();
     auto normal = RandomDirection(GetNormal(material.normal), generator, material.roughness);
 
@@ -38,28 +38,32 @@ Ray Intersection::Reflect(const Ray &incoming, double& powerMultiplier, double& 
     double cos_i = normal.Dot(incoming.direction); // cosi
     double sin_i = sqrt(1 - cos_i * cos_i);
     double refraction_ratio;
+    Color newAttenuation;
+    double newRefractiveIndex;
+    powerMultiplier *= (attenuation * (-t)).Exp();
     if(cos_i > 0) {
         // going from inside out
         refraction_ratio = material.refractiveIndex;
-        refractiveIndex = 1;
+        newRefractiveIndex = 1;
         normal *= -1;
-        powerMultiplier *= pow((1 - material.opacity), t);
+        // powerMultiplier *= pow((1 - material.opacity), t);
+        newAttenuation = Color();
     }
     else {
         // going from outside in
         refraction_ratio = refractiveIndex / material.refractiveIndex;
-        refractiveIndex = material.refractiveIndex;
+        newRefractiveIndex = material.refractiveIndex;
+        newAttenuation = material.attenuation;
         cos_i *= -1;
     }
     double sini = sqrt(1 - cos_i * cos_i);
     if(sini > 1 / refraction_ratio) {
-        refractiveIndex = material.refractiveIndex;
         Vector3D idealReflection = incoming.direction - normal * (2 * incoming.direction.Dot(normal));
         return Ray(incoming.Point(t - 0.00000001), idealReflection);
     }
     double sin_t = refraction_ratio * sini;
     double cos_t = sqrt(1 - sin_t * sin_t);
-    double n2 = refractiveIndex;
+    double n2 = newRefractiveIndex;
 
     double rs = pow((n1 * cos_i - n2 * cos_t) / (n1 * cos_i + n2 * cos_t), 2); // reflection in s mode
     double rp = pow((n1 * cos_t - n2 * cos_i) / (n1 * cos_t + n2 * cos_i), 2); // reflection in p mode
@@ -68,7 +72,7 @@ Ray Intersection::Reflect(const Ray &incoming, double& powerMultiplier, double& 
     double transmission = 1 - reflection;
 
     if(material.metalness) {
-        //Vector3D normal = RandomDirection(normal, generator, 0.0);
+        // reflection
         powerMultiplier *= reflection;
         Vector3D idealReflection = incoming.direction - normal * (2 * incoming.direction.Dot(normal));
         return Ray(incoming.Point(t - 0.00000001), idealReflection);
@@ -84,6 +88,8 @@ Ray Intersection::Reflect(const Ray &incoming, double& powerMultiplier, double& 
             // transmission
             if(d(generator) >= material.opacity) {
                 // refract
+                attenuation = newAttenuation;
+                refractiveIndex = newRefractiveIndex;
                 Vector3D refracted = normal * -1 * sqrt(1 - sin_t * sin_t) + normal.Cross(incoming.direction).Cross(normal).Normalize() * sin_t;
                 return Ray(incoming.Point(t + 0.00000001), refracted);
             }

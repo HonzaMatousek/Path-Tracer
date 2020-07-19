@@ -44,4 +44,7 @@ public:
     static Color ReadFromByteBufferRGB(unsigned char * buffer, double exposition);
 
     Vector3D ToNormal() const;
+
+    [[ nodiscard ]]
+    Color Exp() const;
 };

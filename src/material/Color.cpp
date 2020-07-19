@@ -125,3 +125,11 @@ Vector3D Color::ToNormal() const {
             (b * 2) - 1
     );
 }
+
+Color Color::Exp() const {
+    return Color(
+       exp(r),
+       exp(g),
+       exp(b)
+    );
+}

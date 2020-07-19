@@ -44,6 +44,7 @@ void Scene::RenderCore(std::mt19937& generator, LineEmployer & lineEmployer) con
             Color albedoMultiplier(1, 1, 1);
             albedoMultiplier *= 1 - std::abs(cam_x * cam_y);
             double refractiveIndex = 1;
+            Color attenuation = Color();
             for (int i = 0; i < iteration_limit; i++) {
                 Intersection intersection(this, ray);
                 Intersect(ray, intersection);
@@ -53,9 +54,7 @@ void Scene::RenderCore(std::mt19937& generator, LineEmployer & lineEmployer) con
                 if (albedoMultiplier == Color()) {
                     break;
                 }
-                double power = 1;
-                ray = intersection.Reflect(ray, power, refractiveIndex, generator);
-                albedoMultiplier *= power;
+                ray = intersection.Reflect(ray, albedoMultiplier, refractiveIndex, attenuation, generator);
             }
         }
     }
@@ -254,6 +253,9 @@ void Scene::LoadMTL(const std::string & fileName) {
         }
         else if(command == "Ko") { // opacity
             lineStream >> current_material->base.opacity;
+        }
+        else if(command == "Kb") {
+            lineStream >> current_material->base.attenuation.r >> current_material->base.attenuation.g >> current_material->base.attenuation.b;
         }
         else if(command == "map_Kd") { // albedo texture
             std::string texturePath;

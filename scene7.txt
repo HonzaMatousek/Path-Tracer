@@ -7,6 +7,12 @@ model water_surface.obj
 pop_transform
 pop_transform
 
+move 0 -20 0
+rotate_y 0
+model white_diffuse_surface.obj
+pop_transform
+pop_transform
+
 load_material_library materials.mtl
 
 move 0 0 0
@@ -16,6 +22,8 @@ sphere 0 0 -15 10
 # sphere 0 0 0 -0.95
 current_material whiteLight
 # sphere 6 0 5 1
+current_material fog_yellow
+sphere 2 0 -2 0.5
 pop_transform
 
 background_texture sky6b.jpg
@@ -28,4 +36,4 @@ background_texture sky6b.jpg
 # camera       0 0 9        0 0 -1           0 1 0         1920          1080         30
 camera       0 0 2.5        0 0 -1           0 1 0         1920          1080         90
 # camera       0 0 9        0 0 -1           0 1 0         3840          2160         30
-output       fresnel-04.jpg     100    1
+output       fresnel-05.jpg     100    1
