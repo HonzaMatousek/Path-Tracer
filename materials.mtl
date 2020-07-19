@@ -1,7 +1,8 @@
 newmtl glass
 
 Ka 0 0 0
-Kd 0.1 1 0.05
+# Kd 0.1 1 0.05
+Kd 1 1 1
 Km 0
 Kr 0
 Kf 1.52
@@ -54,3 +55,74 @@ Ka 0 0 0
 shader_Kd voronoi
 Km 0
 Kr 0
+
+newmtl moon
+
+Ka 0 0 0
+# Kd 0.9 0.9 0.9
+map_Kd moon_albedo.jpg
+# map_Kn Moon.Normal_8192x4096.jpg
+map_Kn moon_normal2.jpg
+Km 0
+Kr 0
+
+newmtl moon_gold
+
+Ka 0 0 0
+Kd 1 0.8863 0.6078
+# shader_Kd marble
+# map_Kd moon_albedo.jpg
+# map_Kn Moon.Normal_8192x4096.jpg
+map_Kn moon_normal2.jpg
+Km 1
+Kr 0.1
+
+newmtl moon_glass
+
+Ka 0 0 0
+# Kd 0.1 1 0.05
+Kd 1 1 1
+map_Kn moon_normal2.jpg
+Km 0
+Kr 0
+Kf 1.52
+# Kf 1.00
+# Kf 1.01
+Ko 0.05
+
+newmtl earth_glass
+
+Ka 0 0 0
+# Kd 0.1 1 0.05
+Kd 1 1 1
+map_Kn earth_normal.jpg
+Km 0
+Kr 0
+Kf 1.52
+# Kf 1.00
+# Kf 1.01
+Ko 0.05
+
+newmtl earth_diffuse
+
+Ka 0 0 0
+Kd 1 1 1
+map_Kn earth_normal.jpg
+Km 0
+Kr 0
+
+newmtl earth_gold
+
+Ka 0 0 0
+# Kd 1 0.8863 0.6078
+Kd 1 0.7668 0.3344
+map_Kn earth_normal.jpg
+Km 1
+Kr 0.01
+
+newmtl matte
+
+Ka 0 0 0
+Kd 0.5 0.5 0.5
+Km 1
+Kr 0.0001

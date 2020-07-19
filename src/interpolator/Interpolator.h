@@ -41,10 +41,13 @@ public:
 };
 
 class NormalizeInterpolator : public Interpolator<Transform> {
+    double radius = 1.0;
 public:
+    explicit NormalizeInterpolator(double radius = 1.0) : radius(radius) {}
+
     [[ nodiscard ]]
     Transform Interpolate(const Vector3D & coordinates) const override {
-        return Transform::SomeBasisForZ(Vector3D(coordinates).Normalize());
+        return Transform::SomeBasisForY((coordinates * radius).Normalize());
     }
 };
 
@@ -86,7 +89,7 @@ public:
     Vector3D Interpolate(const Vector3D & coordinates) const override {
         Vector3D coord = base ? base->Interpolate(coordinates) : coordinates;
         double bg_y = acos(coord.y / coord.Length()) / M_PI;
-        double bg_x = atan2(coord.z, coord.x) / 2 / M_PI + 0.5;
+        double bg_x = atan2(coord.x, coord.z) / 2 / M_PI + 0.5;
         return Vector3D(bg_x, bg_y, 0);
     }
 };

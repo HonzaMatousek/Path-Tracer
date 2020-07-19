@@ -71,7 +71,20 @@ public:
         auto a = originalNormal.Cross(Vector3D(0,0,1));
         a.Normalize();
         auto b = a.Cross(originalNormal);
-        return Transform(b, a, originalNormal);
+        return Transform(a * -1, b * -1, originalNormal);
+    }
+
+    static Transform SomeBasisForY(const Vector3D & originalNormal) {
+        if(originalNormal == Vector3D(0,1,0)) {
+            return Transform(Vector3D(1,0,0), Vector3D(0,0,-1), originalNormal);
+        }
+        if(originalNormal == Vector3D(0,-1,0)) {
+            return Transform(Vector3D(1,0,0), Vector3D(0,0,1), originalNormal);
+        }
+        auto a = originalNormal.Cross(Vector3D(0,1,0));
+        a.Normalize();
+        auto b = a.Cross(originalNormal);
+        return Transform(a * -1, b * -1, originalNormal);
     }
 
     Transform operator*(const Transform rhs) const {

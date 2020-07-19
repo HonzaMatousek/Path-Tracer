@@ -12,7 +12,12 @@ size_t GetCoordinate(double in, int size, bool repeat, bool roundDown) {
 }
 
 double GetFractionalPart(double in, int size, bool repeat) {
-    return std::clamp(in, 0.0, 1.0) * (size - 1) - (size_t)(std::clamp(in, 0.0, 1.0) * (size - 1));
+    if(repeat) {
+        return Util::Wrap(in) * (size - 1) - (size_t)(Util::Wrap(in) * (size - 1));
+    }
+    else {
+        return std::clamp(in, 0.0, 1.0) * (size - 1) - (size_t)(std::clamp(in, 0.0, 1.0) * (size - 1));
+    }
 }
 
 Image::Image(int width, int height) : width(width), height(height) {

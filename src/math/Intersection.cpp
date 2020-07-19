@@ -75,5 +75,5 @@ Material Intersection::GetMaterial() const {
 }
 
 Vector3D Intersection::GetNormal(const Vector3D & materialNormal) const {
-    return body->GetNormal(localCoordinates).ApplyWithoutTranslation(materialNormal);
+    return body->GetNormal(localCoordinates).ApplyWithoutTranslation(materialNormal).Normalize();
 }

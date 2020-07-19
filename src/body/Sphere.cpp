@@ -1,7 +1,7 @@
 #include <cmath>
 #include "Sphere.h"
 
-Sphere::Sphere(const Vector3D &center, double radius, const Material & material) : Body(std::make_unique<FlatInterpolator<Material>>(material), std::make_unique<NormalizeInterpolator>(), center - Vector3D(1,1,1) * radius, center + Vector3D(1,1,1) * radius), center(center), radius(radius), radiusSquared(radius * radius) {}
+Sphere::Sphere(const Vector3D &center, double radius, const Material & material) : Body(std::make_unique<FlatInterpolator<Material>>(material), std::make_unique<NormalizeInterpolator>(radius), center - Vector3D(1,1,1) * std::abs(radius), center + Vector3D(1,1,1) * std::abs(radius)), center(center), radius(radius), radiusSquared(radius * radius) {}
 
 void Sphere::Intersect(const Ray & ray, Intersection & intersection) const {
     // (x-cx)^2 + (y-cy)^2 + (z-cz)^2 = r^2
