@@ -244,7 +244,7 @@ void Scene::LoadMTL(const std::string & fileName) {
         else if(command == "Km") { // metalness
             double m;
             lineStream >> m;
-            current_material->base.reflective = (m > 0.5);
+            current_material->base.metalness = (m > 0.5);
         }
         else if(command == "Kr") { // roughness
             lineStream >> current_material->base.roughness;

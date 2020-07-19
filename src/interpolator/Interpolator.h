@@ -114,18 +114,18 @@ class LegacyTextureInterpolator : public Interpolator<Material> {
     std::unique_ptr<Interpolator<Vector3D>> base;
     std::shared_ptr<Image> emissionTexture;
     std::shared_ptr<Image> albedoTexture;
-    bool reflective;
+    bool metalness;
     double roughness;
 public:
-    LegacyTextureInterpolator(std::unique_ptr<Interpolator<Vector3D>> && base, const std::shared_ptr<Image> & emissionTexture, const std::shared_ptr<Image> & albedoTexture, bool reflective, double roughness) : base(std::move(base)), emissionTexture(emissionTexture), albedoTexture(albedoTexture), reflective(reflective), roughness(roughness) {}
+    LegacyTextureInterpolator(std::unique_ptr<Interpolator<Vector3D>> && base, const std::shared_ptr<Image> & emissionTexture, const std::shared_ptr<Image> & albedoTexture, bool reflective, double roughness) : base(std::move(base)), emissionTexture(emissionTexture), albedoTexture(albedoTexture), metalness(reflective), roughness(roughness) {}
 
     [[ nodiscard ]]
     Material Interpolate(const Vector3D & coordinates) const override {
         Vector3D tex_coords(base->Interpolate(coordinates));
         return Material(
-            emissionTexture ? emissionTexture->GetPixel(tex_coords.x, tex_coords.y) : Color(),
-            albedoTexture ? albedoTexture->GetPixel(tex_coords.x, tex_coords.y) : Color(),
-            reflective
+                emissionTexture ? emissionTexture->GetPixel(tex_coords.x, tex_coords.y) : Color(),
+                albedoTexture ? albedoTexture->GetPixel(tex_coords.x, tex_coords.y) : Color(),
+                metalness
         );
     }
 };
@@ -142,7 +142,7 @@ public:
         return Material(
                 material->emissiveTexture ? material->emissiveTexture->GetPixel(tex_coords.x, tex_coords.y, tex_coords.z) : material->base.emissive,
                 material->albedoTexture ? material->albedoTexture->GetPixel(tex_coords.x, tex_coords.y, tex_coords.z) : material->base.albedo,
-                material->base.reflective,
+                material->base.metalness,
                 material->base.roughness,
                 material->base.refractiveIndex,
                 material->base.opacity,

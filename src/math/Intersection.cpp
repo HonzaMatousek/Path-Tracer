@@ -29,7 +29,7 @@ Vector3D RandomDirection(const Vector3D & usualDirection, std::mt19937 & generat
 Ray Intersection::Reflect(const Ray &incoming, double& powerMultiplier, double& refractiveIndex, std::mt19937 & generator) {
     auto material = GetMaterial();
     auto normal = RandomDirection(GetNormal(material.normal), generator, material.roughness);
-    if(material.reflective) {
+    if(material.metalness) {
         //Vector3D normal = RandomDirection(normal, generator, 0.0);
         Vector3D idealReflection = incoming.direction - normal * (2 * incoming.direction.Dot(normal));
         return Ray(incoming.Point(t - 0.00000001), idealReflection);
