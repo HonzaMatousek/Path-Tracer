@@ -45,3 +45,11 @@ Color Image::GetPixel(double x, double y, double z) const {
     auto c1 = Util::Lerp(c10, c11, GetFractionalPart(x, width, repeatX));
     return Util::Lerp(c0, c1, GetFractionalPart(y, height, repeatY));
 }
+
+void Image::SetRepeatX(bool newRepeat) {
+    repeatX = newRepeat;
+}
+
+void Image::SetRepeatY(bool newRepeat) {
+    repeatY = newRepeat;
+}

@@ -23,4 +23,7 @@ public:
     virtual bool isSpatial() const { return false; }
 
     virtual void Save(const std::string & fileName, double exposition) const = 0;
+
+    void SetRepeatX(bool newRepeat);
+    void SetRepeatY(bool newRepeat);
 };

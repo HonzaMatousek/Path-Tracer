@@ -30,7 +30,7 @@ class LineEmployer {
 public:
     int getLine() {
         std::lock_guard guard(freeLineMutex);
-        return ++freeLine;
+        return freeLine++;
     }
 };
 
@@ -172,6 +172,7 @@ Scene::Scene(const std::string & fileName) : Body(std::make_unique<FlatInterpola
             std::string texturePath;
             lineStream >> texturePath;
             std::shared_ptr<Image> bg(new ImageJPEG(texturePath, 1, 95));
+            bg->SetRepeatY(false);
             SetMaterialInterpolator(
                 std::make_unique<LegacyTextureInterpolator>(std::make_unique<SpherePolarInterpolator>(),
                                                             bg,
