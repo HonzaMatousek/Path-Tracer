@@ -12,6 +12,7 @@
 #include "../shader/Wood.h"
 #include "../shader/Marble.h"
 #include "../shader/Voronoi.h"
+#include "../camera/PerspectiveCamera.h"
 #include <fstream>
 #include <sstream>
 #include <map>
@@ -181,7 +182,7 @@ Scene::Scene(const std::string & fileName) : Body(std::make_unique<FlatInterpola
         else if(command == "camera") {
             double eye_x, eye_y, eye_z, dir_x, dir_y, dir_z, up_x, up_y, up_z, fov;
             lineStream >> eye_x >> eye_y >> eye_z >> dir_x >> dir_y >> dir_z >> up_x >> up_y >> up_z >> image_width >> image_height >> fov;
-            camera = std::make_unique<Camera>(transforms.top().Apply(Vector3D(eye_x, eye_y, eye_z)),
+            camera = std::make_unique<PerspectiveCamera>(transforms.top().Apply(Vector3D(eye_x, eye_y, eye_z)),
                                               transforms.top().ApplyWithoutTranslation(Vector3D(dir_x, dir_y, dir_z)),
                                               transforms.top().ApplyWithoutTranslation(Vector3D(up_x, up_y, up_z)), image_width, image_height, fov);
         }

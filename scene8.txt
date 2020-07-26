@@ -37,4 +37,4 @@ camera       0 0.25 2.5        0 0 -1           0 1 0         1920          1080
 # camera_env water_wavy
 # camera       0 0 9        0 0 -1           0 1 0         3840          2160         30
 camera_env fog_yellow
-output       fresnel-06e.jpg     1000    1
+output       fresnel-06f.jpg     10    1
