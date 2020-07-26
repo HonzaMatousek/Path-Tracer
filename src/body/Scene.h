@@ -8,6 +8,7 @@
 
 class Camera;
 class Image;
+class Effect;
 class LineEmployer;
 
 class Scene : public Body {
@@ -15,6 +16,7 @@ class Scene : public Body {
     std::unique_ptr<Body> kdTree;
     std::unique_ptr<Camera> camera;
     std::unique_ptr<Image> image;
+    std::unique_ptr<Effect> effect;
     int image_width;
     int image_height;
     int samples;

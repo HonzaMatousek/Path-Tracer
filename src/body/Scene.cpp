@@ -7,6 +7,7 @@
 #include "Sphere.h"
 #include "../camera/Camera.h"
 #include "../image/ImageJPEG.h"
+#include "../effect/Effect.h"
 #include "Triangle.h"
 #include "../math/Transform.h"
 #include "../shader/Wood.h"
@@ -16,6 +17,7 @@
 #include "../camera/OrthogonalCamera.h"
 #include "../camera/SphericalCamera.h"
 #include "../camera/CubeMapCamera.h"
+#include "../effect/DepthOfFieldEffect.h"
 #include <fstream>
 #include <sstream>
 #include <map>
@@ -44,6 +46,7 @@ void Scene::RenderCore(std::mt19937& generator, LineEmployer & lineEmployer) con
             double cam_x = d(generator);
             double cam_y = d(generator);
             Ray ray = camera->Project(x + cam_x, y + cam_y);
+            effect->ModifyRay(ray, generator);
             //Ray ray = camera.Project(x, y);
             Color albedoMultiplier(1, 1, 1);
             albedoMultiplier *= 1 - std::abs(cam_x * cam_y);
@@ -92,9 +95,9 @@ void Scene::Compile() {
     kdTree = std::make_unique<KDTree>(treeBodies, l, u);
 }
 
-Scene::Scene() : Body(std::make_unique<FlatInterpolator<Material>>(Material())) {}
+Scene::Scene() : Body(std::make_unique<FlatInterpolator<Material>>(Material())), effect(std::make_unique<Effect>()) {}
 
-Scene::Scene(const std::string & fileName) : Body(std::make_unique<FlatInterpolator<Material>>(Material())) {
+Scene::Scene(const std::string & fileName) : Scene() {
     //SetMaterialInterpolator(std::make_unique<FlatInterpolator<Material>>(Material(Color(0,0,0), Color(), false)));
     std::ifstream file(fileName);
     std::string line;
@@ -216,6 +219,16 @@ Scene::Scene(const std::string & fileName) : Body(std::make_unique<FlatInterpola
             }
             camera->environment.attenuation = it->second.base.attenuation;
             camera->environment.refractiveIndex = it->second.base.refractiveIndex;
+        }
+        else if(command == "dof") {
+            double focus, spread;
+            lineStream >> focus >> spread;
+            if(focus == 0 || spread == 0) {
+                effect = std::make_unique<Effect>();
+            }
+            else {
+                effect = std::make_unique<DepthOfFieldEffect>(focus, spread);
+            }
         }
         else if(command == "output") {
             std::string outputFileName;

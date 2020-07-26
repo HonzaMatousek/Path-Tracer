@@ -5,7 +5,7 @@
 
 inline std::uniform_real_distribution<double> d(0.0, 1.0);
 
-Vector3D RandomDirection(const Vector3D & usualDirection, std::mt19937 & generator, double spread) {
+inline Vector3D RandomDirection(const Vector3D & usualDirection, std::mt19937 & generator, double spread) {
     if(spread == 0) {
         return usualDirection;
     }
