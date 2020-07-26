@@ -14,6 +14,7 @@
 #include "../shader/Voronoi.h"
 #include "../camera/PerspectiveCamera.h"
 #include "../camera/OrthogonalCamera.h"
+#include "../camera/SphericalCamera.h"
 #include <fstream>
 #include <sstream>
 #include <map>
@@ -41,7 +42,7 @@ void Scene::RenderCore(std::mt19937& generator, LineEmployer & lineEmployer) con
         for (int x = 0; x < image_width; x++) {
             double cam_x = d(generator);
             double cam_y = d(generator);
-            Ray ray = camera->Project(x + d(generator), y + d(generator));
+            Ray ray = camera->Project(x + cam_x, y + cam_y);
             //Ray ray = camera.Project(x, y);
             Color albedoMultiplier(1, 1, 1);
             albedoMultiplier *= 1 - std::abs(cam_x * cam_y);
@@ -193,6 +194,11 @@ Scene::Scene(const std::string & fileName) : Body(std::make_unique<FlatInterpola
             camera = std::make_unique<OrthogonalCamera>(transforms.top().Apply(Vector3D(eye_x, eye_y, eye_z)),
                                                          transforms.top().ApplyWithoutTranslation(Vector3D(dir_x, dir_y, dir_z)),
                                                          transforms.top().ApplyWithoutTranslation(Vector3D(up_x, up_y, up_z)), image_width, image_height, horizontalExtent);
+        }
+        else if(command == "camera_sphere") {
+            double eye_x, eye_y, eye_z;
+            lineStream >> eye_x >> eye_y >> eye_z >> image_width >> image_height;
+            camera = std::make_unique<SphericalCamera>(transforms.top().Apply(Vector3D(eye_x, eye_y, eye_z)), image_width, image_height);
         }
         else if(command == "camera_env") {
             std::string newCurrentMaterialName;
