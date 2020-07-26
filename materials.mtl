@@ -8,7 +8,34 @@ Kr 0
 Kf 1.52
 # Kf 1.00
 # Kf 1.01
-Ko 0.05
+Ko 1.0
+Kb 1 1 1
+
+newmtl glass_rough
+
+Ka 0 0 0
+# Kd 0.1 1 0.05
+Kd 1 1 1
+Km 0
+Kr 0.01
+Kf 1.52
+# Kf 1.00
+# Kf 1.01
+Ko 0.0
+Kb 1 1 1
+
+newmtl glass_green
+
+Ka 0 0 0
+# Kd 0.1 1 0.05
+Kd 1 1 1
+Km 0
+Kr 0
+Kf 1.52
+# Kf 1.00
+# Kf 1.01
+Ko 0.0
+Kb 10 1 20
 
 newmtl quartz_glass
 
@@ -29,8 +56,9 @@ Kr 0
 # Kf 1.52
 # Kf 1.00
 Kf 1.33
-Ko 0.1
-Kb 0.08 0.05 0.02
+Ko 0.0
+# Kb 0.08 0.05 0.02
+Kb 0.5 0.02 0.02
 
 newmtl water_wavy
 Ka 0 0 0
@@ -41,7 +69,9 @@ Kr 0
 # Kf 1.52
 # Kf 1.00
 Kf 1.33
-Ko 0.1
+Ko 0.0
+# Kb 0.08 0.05 0.02
+Kb 0.5 0.02 0.02
 
 newmtl smoke_glass
 
@@ -100,7 +130,8 @@ Kr 0
 Kf 1.52
 # Kf 1.00
 # Kf 1.01
-Ko 0.05
+Ko 0.0
+Kb 1 1 1
 
 newmtl earth_glass
 
@@ -113,7 +144,8 @@ Kr 0
 Kf 1.52
 # Kf 1.00
 # Kf 1.01
-Ko 0.05
+Ko 0.0
+Kb 1 1 1
 
 newmtl earth_diffuse
 
@@ -143,21 +175,49 @@ Km 1
 Kr 0.00
 Kf 5
 
+newmtl chromium
+
+Ka 0 0 0
+Kd 0.2716 0.2716 0.2716
+Km 1
+Kr 0
+Kf 2.97
+
 newmtl matte
 
 Ka 0 0 0
-Kd 0.5 0.5 0.5
+Kd 1 1 1
 Km 1
 Kr 0.0001
+Ko 1
+Kf 3
 
 newmtl plastic_red
 
 Ka 0 0 0
-# Kd 0.95 0.05 0.0
+Kd 0.95 0.01 0.01
+# Kd 1 1 1
+Km 0
+Kr 0
+Kf 1.47
+Ko 1
+
+newmtl plastic_white
+
+Ka 0 0 0
 Kd 1 1 1
 Km 0
 Kr 0
 Kf 1.47
+Ko 1
+
+newmtl porcelain
+
+Ka 0 0 0
+Kd 1 1 1
+Km 0
+Kr 0
+Kf 1.7
 Ko 1
 
 newmtl fog_yellow
@@ -170,3 +230,14 @@ Kr 0
 Kf 1
 Ko 0
 Kb 0.01 0.01 0.02
+
+newmtl diamond
+
+Ka 0 0 0
+# Kd 0.1 1 0.05
+Kd 1 1 1
+Km 0
+Kr 0
+Kf 2.418
+Ko 0.0
+Kb 1 1 1

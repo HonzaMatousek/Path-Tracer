@@ -26,7 +26,18 @@ Vector3D RandomDirection(const Vector3D & usualDirection, std::mt19937 & generat
     return Transform::SomeBasisForZ(usualDirection).ApplyWithoutTranslation(randomDirection);
 }
 
-Ray Intersection::Reflect(const Ray &incoming, Color& powerMultiplier, double& refractiveIndex, Color& attenuation, std::mt19937 & generator) {
+Environment previous(std::stack<Environment> & environments) {
+    if(environments.size() == 1) {
+        return Environment();
+    }
+    auto current = environments.top();
+    environments.pop();
+    auto result = environments.top();
+    environments.push(current);
+    return result;
+}
+
+Ray Intersection::Reflect(const Ray &incoming, Color& powerMultiplier, std::stack<Environment> & environments, std::mt19937 & generator) {
     auto material = GetMaterial();
     auto normal = RandomDirection(GetNormal(material.normal), generator, material.roughness);
 
@@ -34,24 +45,26 @@ Ray Intersection::Reflect(const Ray &incoming, Color& powerMultiplier, double& r
     // Rs = pow(n1 cos phii - n2 cos phit / n1 cos phii + n2 cos phit, 2) // pricna polarizace
     // Rp = pow(n1 cos phit - n2 cos phii / n1 cos phit + n2 cos phii, 2) // podelna polarizaci
 
-    double n1 = refractiveIndex;
+    double n1 = environments.top().refractiveIndex;
     double cos_i = normal.Dot(incoming.direction); // cosi
     double sin_i = sqrt(1 - cos_i * cos_i);
     double refraction_ratio;
     Color newAttenuation;
     double newRefractiveIndex;
-    powerMultiplier *= (attenuation * (-t)).Exp();
+    // powerMultiplier *= (environments.top().attenuation * (-t)).Exp();
+    bool fromInside = false;
     if(cos_i > 0) {
         // going from inside out
-        refraction_ratio = material.refractiveIndex;
-        newRefractiveIndex = 1;
+        auto out_env = previous(environments);
+        refraction_ratio = environments.top().refractiveIndex / out_env.refractiveIndex;
+        newRefractiveIndex = out_env.refractiveIndex;
+        newAttenuation = out_env.attenuation;
         normal *= -1;
-        // powerMultiplier *= pow((1 - material.opacity), t);
-        newAttenuation = Color();
+        fromInside = true;
     }
     else {
         // going from outside in
-        refraction_ratio = refractiveIndex / material.refractiveIndex;
+        refraction_ratio = environments.top().refractiveIndex / material.refractiveIndex;
         newRefractiveIndex = material.refractiveIndex;
         newAttenuation = material.attenuation;
         cos_i *= -1;
@@ -65,8 +78,8 @@ Ray Intersection::Reflect(const Ray &incoming, Color& powerMultiplier, double& r
     double cos_t = sqrt(1 - sin_t * sin_t);
     double n2 = newRefractiveIndex;
 
-    double rs = pow((n1 * cos_i - n2 * cos_t) / (n1 * cos_i + n2 * cos_t), 2); // reflection in s mode
-    double rp = pow((n1 * cos_t - n2 * cos_i) / (n1 * cos_t + n2 * cos_i), 2); // reflection in p mode
+    double rs = pow((n2 * cos_i - n1 * cos_t) / (n2 * cos_i + n1 * cos_t), 2); // reflection in s mode
+    double rp = pow((n2 * cos_t - n1 * cos_i) / (n2 * cos_t + n1 * cos_i), 2); // reflection in p mode
 
     double reflection = (rs + rp) / 2;
     double transmission = 1 - reflection;
@@ -80,7 +93,7 @@ Ray Intersection::Reflect(const Ray &incoming, Color& powerMultiplier, double& r
     else {
         if(d(generator) <= reflection) {
             // reflection
-            powerMultiplier *= reflection;
+            // powerMultiplier *= reflection;
             Vector3D idealReflection = incoming.direction - normal * (2 * incoming.direction.Dot(normal));
             return Ray(incoming.Point(t - 0.00000001), idealReflection);
         }
@@ -88,8 +101,12 @@ Ray Intersection::Reflect(const Ray &incoming, Color& powerMultiplier, double& r
             // transmission
             if(d(generator) >= material.opacity) {
                 // refract
-                attenuation = newAttenuation;
-                refractiveIndex = newRefractiveIndex;
+                if(fromInside) {
+                    if(environments.size() > 1) environments.pop();
+                }
+                else {
+                    environments.push(Environment({ newAttenuation, newRefractiveIndex }));
+                }
                 Vector3D refracted = normal * -1 * sqrt(1 - sin_t * sin_t) + normal.Cross(incoming.direction).Cross(normal).Normalize() * sin_t;
                 return Ray(incoming.Point(t + 0.00000001), refracted);
             }

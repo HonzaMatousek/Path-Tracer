@@ -43,18 +43,21 @@ void Scene::RenderCore(std::mt19937& generator, LineEmployer & lineEmployer) con
             //Ray ray = camera.Project(x, y);
             Color albedoMultiplier(1, 1, 1);
             albedoMultiplier *= 1 - std::abs(cam_x * cam_y);
-            double refractiveIndex = 1;
-            Color attenuation = Color();
+            std::stack<Environment> environments;
+            environments.push(camera->environment);
             for (int i = 0; i < iteration_limit; i++) {
                 Intersection intersection(this, ray);
                 Intersect(ray, intersection);
                 auto material = intersection.GetMaterial();
+                if(intersection) {
+                    albedoMultiplier *= (environments.top().attenuation * (-intersection.t)).Exp();
+                }
                 image->AddPixel(x, y, material.emissive * albedoMultiplier);
                 albedoMultiplier *= material.albedo;
                 if (albedoMultiplier == Color()) {
                     break;
                 }
-                ray = intersection.Reflect(ray, albedoMultiplier, refractiveIndex, attenuation, generator);
+                ray = intersection.Reflect(ray, albedoMultiplier, environments, generator);
             }
         }
     }
@@ -181,6 +184,16 @@ Scene::Scene(const std::string & fileName) : Body(std::make_unique<FlatInterpola
             camera = std::make_unique<Camera>(transforms.top().Apply(Vector3D(eye_x, eye_y, eye_z)),
                                               transforms.top().ApplyWithoutTranslation(Vector3D(dir_x, dir_y, dir_z)),
                                               transforms.top().ApplyWithoutTranslation(Vector3D(up_x, up_y, up_z)), image_width, image_height, fov);
+        }
+        else if(command == "camera_env") {
+            std::string newCurrentMaterialName;
+            lineStream >> newCurrentMaterialName;
+            auto it = materialLibrary.find(newCurrentMaterialName);
+            if(it == materialLibrary.end()) {
+                throw std::runtime_error("Material not found, GTFO!");
+            }
+            camera->environment.attenuation = it->second.base.attenuation;
+            camera->environment.refractiveIndex = it->second.base.refractiveIndex;
         }
         else if(command == "output") {
             std::string outputFileName;

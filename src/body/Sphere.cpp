@@ -24,10 +24,11 @@ void Sphere::Intersect(const Ray & ray, Intersection & intersection) const {
     if (t0 >= 0) {
         Vector3D point = ray.Point(t0);
         intersection.ChooseCloser(Intersection(t0, this, point - center));
+        return;
     }
 
-    /*if (t1 >= 0) {
+    if (t1 >= 0) {
         Vector3D point = ray.Point(t1);
-        return std::make_unique<Intersection>(point, point - center, t1, material);
-    }*/
+        intersection.ChooseCloser(Intersection(t1, this, point - center));
+    }
 }

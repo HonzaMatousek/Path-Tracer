@@ -1,23 +1,20 @@
 # scena, wood testing
 
-# import model into scene
-move 0 -1 0
-rotate_y 0
-model water_surface.obj
-pop_transform
-pop_transform
-
-move 0 -11 0
-rotate_y 0
-model pool.obj
-pop_transform
-pop_transform
-
 load_material_library materials.mtl
 
-move 0 -5 0
-current_material whiteDiffuse
-sphere 0 0 -15 10
+move 2 0 -4
+# current_material glass_green
+move 4.5 0 0
+model glass_panel.obj
+pop_transform
+move -4 0 -4.5
+rotate_y 90
+model glass_panel.obj
+pop_transform
+pop_transform
+current_material porcelain
+sphere 0 0 -5 3
+# model bunny.obj
 # current_material glass
 # sphere 0 0 0 -0.95
 current_material whiteLight
@@ -34,13 +31,10 @@ background_texture sky6b.jpg
 
 # camera       0 1 4        0 0 -1           0 1 0         1920          1080         60
 # camera       0 0 9        0 0 -1           0 1 0         1920          1080         30
-camera       0 1 2.5        0 0 -1           0 1 0         1920          1080         90
+camera       0 0.25 2.5        0 0 -1           0 1 0         1920          1080         90
 # camera       0 -5 2.5        0 0 -1           0 1 0         1920          1080         90
 # camera       0 -5 2.5        0 1 -1           0 1 1         1920          1080         90
 # camera_env water_wavy
 # camera       0 0 9        0 0 -1           0 1 0         3840          2160         30
-output       fresnel-06a.jpg     100    1
-
-camera       0 -5 2.5        0 0 -1           0 1 0         1920          1080         90
-camera_env water_wavy
-output       fresnel-06b.jpg     100    1
+camera_env fog_yellow
+output       fresnel-06e.jpg     1000    1

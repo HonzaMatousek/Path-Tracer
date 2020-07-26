@@ -2,6 +2,7 @@
 
 #include "../math/Vector3D.h"
 #include "../math/Ray.h"
+#include "../material/Environment.h"
 
 class Camera {
     Vector3D eye;
@@ -16,4 +17,6 @@ public:
 
     [[ nodiscard ]]
     Ray Project(double w, double h) const;
+
+    Environment environment;
 };

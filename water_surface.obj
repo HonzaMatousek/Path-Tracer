@@ -1,6 +1,6 @@
 mtllib materials.mtl
 
-usemtl water
+usemtl water_wavy
 
 v -200 0 -200
 v -200 0 200
