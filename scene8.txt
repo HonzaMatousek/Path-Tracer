@@ -31,7 +31,8 @@ background_texture sky6b.jpg
 
 # camera       0 1 4        0 0 -1           0 1 0         1920          1080         60
 # camera       0 0 9        0 0 -1           0 1 0         1920          1080         30
-camera       0 0.25 2.5        0 0 -1           0 1 0         1920          1080         90
+# camera       0 0.25 2.5        0 0 -1           0 1 0         1920          1080         90
+camera_ortho       0 0.25 2.5        0 0 -1           0 1 0         1920          1080         100
 # camera       0 -5 2.5        0 0 -1           0 1 0         1920          1080         90
 # camera       0 -5 2.5        0 1 -1           0 1 1         1920          1080         90
 # camera_env water_wavy

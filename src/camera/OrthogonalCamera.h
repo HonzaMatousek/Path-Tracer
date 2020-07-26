@@ -2,17 +2,18 @@
 
 #include "Camera.h"
 
-class PerspectiveCamera : public Camera {
+class OrthogonalCamera : public Camera {
     Vector3D eye;
     Vector3D direction;
     Vector3D up;
     Vector3D left;
     int width;
     int height;
-    double fov;
+    double horizontalExtent;
 public:
-    PerspectiveCamera(Vector3D eye, Vector3D direction, Vector3D up, int width, int height, double fov);
+    OrthogonalCamera(Vector3D eye, Vector3D direction, Vector3D up, int width, int height, double horizontalExtent);
 
     [[ nodiscard ]]
     Ray Project(double w, double h) const override;
 };
+

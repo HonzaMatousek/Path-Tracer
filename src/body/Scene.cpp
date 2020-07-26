@@ -13,6 +13,7 @@
 #include "../shader/Marble.h"
 #include "../shader/Voronoi.h"
 #include "../camera/PerspectiveCamera.h"
+#include "../camera/OrthogonalCamera.h"
 #include <fstream>
 #include <sstream>
 #include <map>
@@ -185,6 +186,13 @@ Scene::Scene(const std::string & fileName) : Body(std::make_unique<FlatInterpola
             camera = std::make_unique<PerspectiveCamera>(transforms.top().Apply(Vector3D(eye_x, eye_y, eye_z)),
                                               transforms.top().ApplyWithoutTranslation(Vector3D(dir_x, dir_y, dir_z)),
                                               transforms.top().ApplyWithoutTranslation(Vector3D(up_x, up_y, up_z)), image_width, image_height, fov);
+        }
+        else if(command == "camera_ortho") {
+            double eye_x, eye_y, eye_z, dir_x, dir_y, dir_z, up_x, up_y, up_z, horizontalExtent;
+            lineStream >> eye_x >> eye_y >> eye_z >> dir_x >> dir_y >> dir_z >> up_x >> up_y >> up_z >> image_width >> image_height >> horizontalExtent;
+            camera = std::make_unique<OrthogonalCamera>(transforms.top().Apply(Vector3D(eye_x, eye_y, eye_z)),
+                                                         transforms.top().ApplyWithoutTranslation(Vector3D(dir_x, dir_y, dir_z)),
+                                                         transforms.top().ApplyWithoutTranslation(Vector3D(up_x, up_y, up_z)), image_width, image_height, horizontalExtent);
         }
         else if(command == "camera_env") {
             std::string newCurrentMaterialName;

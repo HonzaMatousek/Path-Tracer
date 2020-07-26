@@ -1,0 +1,15 @@
+load_material_library materials.mtl
+
+current_material glass
+
+sphere 0 0 -5 1
+
+background_texture sky6b.jpg
+
+camera_ortho    0 0 0         0 0 -5          0 1 0            1920          1080            10
+
+output       camera-02a.jpg     10    1
+
+camera    0 0 0         0 0 -5          0 1 0            1920          1080            60
+
+output       camera-02b.jpg     10    1
