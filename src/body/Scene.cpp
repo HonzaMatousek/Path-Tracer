@@ -15,6 +15,7 @@
 #include "../camera/PerspectiveCamera.h"
 #include "../camera/OrthogonalCamera.h"
 #include "../camera/SphericalCamera.h"
+#include "../camera/CubeMapCamera.h"
 #include <fstream>
 #include <sstream>
 #include <map>
@@ -200,6 +201,11 @@ Scene::Scene(const std::string & fileName) : Body(std::make_unique<FlatInterpola
             double eye_x, eye_y, eye_z;
             lineStream >> eye_x >> eye_y >> eye_z >> image_width >> image_height;
             camera = std::make_unique<SphericalCamera>(transforms.top().Apply(Vector3D(eye_x, eye_y, eye_z)), image_width, image_height);
+        }
+        else if(command == "camera_cubemap") {
+            double eye_x, eye_y, eye_z;
+            lineStream >> eye_x >> eye_y >> eye_z >> image_width >> image_height;
+            camera = std::make_unique<CubeMapCamera>(transforms.top().Apply(Vector3D(eye_x, eye_y, eye_z)), image_width, image_height);
         }
         else if(command == "camera_env") {
             std::string newCurrentMaterialName;
