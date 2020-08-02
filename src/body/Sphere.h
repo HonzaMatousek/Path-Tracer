@@ -3,6 +3,7 @@
 #include "Body.h"
 
 class Sphere : public Body {
+protected:
     Vector3D center;
     double radius;
     double radiusSquared;

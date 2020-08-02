@@ -18,6 +18,7 @@
 #include "../camera/SphericalCamera.h"
 #include "../camera/CubeMapCamera.h"
 #include "../effect/DepthOfFieldEffect.h"
+#include "SphereEnd.h"
 #include <fstream>
 #include <sstream>
 #include <map>
@@ -157,6 +158,24 @@ Scene::Scene(const std::string & fileName) : Scene() {
             double ax, ay, az, bx, by, bz, cx, cy, cz;
             lineStream >> ax >> ay >> az >> bx >> by >> bz >> cx >> cy >> cz;
             AddBody(std::make_unique<Triangle>(transforms.top().Apply(Vector3D(ax, ay, az)), transforms.top().Apply(Vector3D(bx, by, bz)), transforms.top().Apply(Vector3D(cx, cy, cz)), current_material->base));
+        }
+        else if(command == "sphere_lens") {
+            double x, y, z, radius, rimRadius;
+            lineStream >> x >> y >> z >> radius >> rimRadius;
+            auto sphere = std::make_unique<SphereEnd>(transforms.top().Apply(Vector3D(x, y, z)), radius, transforms.top().ApplyWithoutTranslation(Vector3D(0,0,1)), rimRadius, current_material->base);
+            if(current_material->albedoTexture && current_material->albedoTexture->isSpatial()) {
+                sphere->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(
+                        std::make_unique<PassThroughInterpolator>(),
+                        current_material
+                ));
+            }
+            else {
+                sphere->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(
+                        std::make_unique<SpherePolarInterpolator>(),
+                        current_material
+                ));
+            }
+            AddBody(std::move(sphere));
         }
         else if(command == "current_material") {
             std::string newCurrentMaterialName;
