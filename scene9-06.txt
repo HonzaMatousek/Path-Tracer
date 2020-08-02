@@ -1,0 +1,36 @@
+load_material_library materials.mtl
+
+current_material gold
+
+sphere 2 0 15 1
+sphere 2 0 10 1
+sphere 2 0 5 1
+sphere 2 0 0 1
+sphere 2 0 -5 1
+sphere 2 0 -10 1
+sphere 2 0 -15 1
+
+sphere -2 0 15 1
+sphere -2 0 10 1
+sphere -2 0 5 1
+sphere -2 0 0 1
+sphere -2 0 -5 1
+sphere -2 0 -10 1
+sphere -2 0 -15 1
+
+move 0 -0.5 0
+model water2_surface.obj
+pop_transform
+
+move 0 -1.5 0
+model pool2.obj
+pop_transform
+
+background_texture sky5.jpg
+
+camera_sphere    0 0 0         9192          4096
+output       camera-06a.jpg     10    1
+
+camera_sphere    0 -1 0         9192          4096
+camera_env water_wavy
+output       camera-06b.jpg     10    1
