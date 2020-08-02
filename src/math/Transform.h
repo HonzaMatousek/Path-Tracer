@@ -45,6 +45,8 @@ public:
         matrix[3][3] = 1;
     }
 
+    Transform() : Transform(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0) {}
+
     static Transform Translation(double x, double y, double z) {
         return Transform(1.0, 0.0, 0.0, x, 0.0, 1.0, 0.0, y, 0.0, 0.0, 1.0, z, 0.0, 0.0, 0.0, 1.0);
     }
@@ -130,5 +132,135 @@ public:
         matrix[0][2] = v.x;
         matrix[1][2] = v.y;
         matrix[2][2] = v.z;
+    }
+
+    [[ nodiscard ]]
+    Transform Inverse() const {
+        double inv[16];
+        inv[0] = matrix[1][1]  * matrix[2][2] * matrix[3][3] -
+                 matrix[1][1]  * matrix[2][3] * matrix[3][2] -
+                 matrix[2][1]  * matrix[1][2]  * matrix[3][3] +
+                 matrix[2][1]  * matrix[1][3]  * matrix[3][2] +
+                 matrix[3][1] * matrix[1][2]  * matrix[2][3] -
+                 matrix[3][1] * matrix[1][3]  * matrix[2][2];
+
+        inv[4] = -matrix[1][0]  * matrix[2][2] * matrix[3][3] +
+                 matrix[1][0]  * matrix[2][3] * matrix[3][2] +
+                 matrix[2][0]  * matrix[1][2]  * matrix[3][3] -
+                 matrix[2][0]  * matrix[1][3]  * matrix[3][2] -
+                 matrix[3][0] * matrix[1][2]  * matrix[2][3] +
+                 matrix[3][0] * matrix[1][3]  * matrix[2][2];
+
+        inv[8] = matrix[1][0]  * matrix[2][1] * matrix[3][3] -
+                 matrix[1][0]  * matrix[2][3] * matrix[3][1] -
+                 matrix[2][0]  * matrix[1][1] * matrix[3][3] +
+                 matrix[2][0]  * matrix[1][3] * matrix[3][1] +
+                 matrix[3][0] * matrix[1][1] * matrix[2][3] -
+                 matrix[3][0] * matrix[1][3] * matrix[2][1];
+
+        inv[12] = -matrix[1][0]  * matrix[2][1] * matrix[3][2] +
+                  matrix[1][0]  * matrix[2][2] * matrix[3][1] +
+                  matrix[2][0]  * matrix[1][1] * matrix[3][2] -
+                  matrix[2][0]  * matrix[1][2] * matrix[3][1] -
+                  matrix[3][0] * matrix[1][1] * matrix[2][2] +
+                  matrix[3][0] * matrix[1][2] * matrix[2][1];
+
+        inv[1] = -matrix[0][1]  * matrix[2][2] * matrix[3][3] +
+                 matrix[0][1]  * matrix[2][3] * matrix[3][2] +
+                 matrix[2][1]  * matrix[0][2] * matrix[3][3] -
+                 matrix[2][1]  * matrix[0][3] * matrix[3][2] -
+                 matrix[3][1] * matrix[0][2] * matrix[2][3] +
+                 matrix[3][1] * matrix[0][3] * matrix[2][2];
+
+        inv[5] = matrix[0][0]  * matrix[2][2] * matrix[3][3] -
+                 matrix[0][0]  * matrix[2][3] * matrix[3][2] -
+                 matrix[2][0]  * matrix[0][2] * matrix[3][3] +
+                 matrix[2][0]  * matrix[0][3] * matrix[3][2] +
+                 matrix[3][0] * matrix[0][2] * matrix[2][3] -
+                 matrix[3][0] * matrix[0][3] * matrix[2][2];
+
+        inv[9] = -matrix[0][0]  * matrix[2][1] * matrix[3][3] +
+                 matrix[0][0]  * matrix[2][3] * matrix[3][1] +
+                 matrix[2][0]  * matrix[0][1] * matrix[3][3] -
+                 matrix[2][0]  * matrix[0][3] * matrix[3][1] -
+                 matrix[3][0] * matrix[0][1] * matrix[2][3] +
+                 matrix[3][0] * matrix[0][3] * matrix[2][1];
+
+        inv[13] = matrix[0][0]  * matrix[2][1] * matrix[3][2] -
+                  matrix[0][0]  * matrix[2][2] * matrix[3][1] -
+                  matrix[2][0]  * matrix[0][1] * matrix[3][2] +
+                  matrix[2][0]  * matrix[0][2] * matrix[3][1] +
+                  matrix[3][0] * matrix[0][1] * matrix[2][2] -
+                  matrix[3][0] * matrix[0][2] * matrix[2][1];
+
+        inv[2] = matrix[0][1]  * matrix[1][2] * matrix[3][3] -
+                 matrix[0][1]  * matrix[1][3] * matrix[3][2] -
+                 matrix[1][1]  * matrix[0][2] * matrix[3][3] +
+                 matrix[1][1]  * matrix[0][3] * matrix[3][2] +
+                 matrix[3][1] * matrix[0][2] * matrix[1][3] -
+                 matrix[3][1] * matrix[0][3] * matrix[1][2];
+
+        inv[6] = -matrix[0][0]  * matrix[1][2] * matrix[3][3] +
+                 matrix[0][0]  * matrix[1][3] * matrix[3][2] +
+                 matrix[1][0]  * matrix[0][2] * matrix[3][3] -
+                 matrix[1][0]  * matrix[0][3] * matrix[3][2] -
+                 matrix[3][0] * matrix[0][2] * matrix[1][3] +
+                 matrix[3][0] * matrix[0][3] * matrix[1][2];
+
+        inv[10] = matrix[0][0]  * matrix[1][1] * matrix[3][3] -
+                  matrix[0][0]  * matrix[1][3] * matrix[3][1] -
+                  matrix[1][0]  * matrix[0][1] * matrix[3][3] +
+                  matrix[1][0]  * matrix[0][3] * matrix[3][1] +
+                  matrix[3][0] * matrix[0][1] * matrix[1][3] -
+                  matrix[3][0] * matrix[0][3] * matrix[1][1];
+
+        inv[14] = -matrix[0][0]  * matrix[1][1] * matrix[3][2] +
+                  matrix[0][0]  * matrix[1][2] * matrix[3][1] +
+                  matrix[1][0]  * matrix[0][1] * matrix[3][2] -
+                  matrix[1][0]  * matrix[0][2] * matrix[3][1] -
+                  matrix[3][0] * matrix[0][1] * matrix[1][2] +
+                  matrix[3][0] * matrix[0][2] * matrix[1][1];
+
+        inv[3] = -matrix[0][1] * matrix[1][2] * matrix[2][3] +
+                 matrix[0][1] * matrix[1][3] * matrix[2][2] +
+                 matrix[1][1] * matrix[0][2] * matrix[2][3] -
+                 matrix[1][1] * matrix[0][3] * matrix[2][2] -
+                 matrix[2][1] * matrix[0][2] * matrix[1][3] +
+                 matrix[2][1] * matrix[0][3] * matrix[1][2];
+
+        inv[7] = matrix[0][0] * matrix[1][2] * matrix[2][3] -
+                 matrix[0][0] * matrix[1][3] * matrix[2][2] -
+                 matrix[1][0] * matrix[0][2] * matrix[2][3] +
+                 matrix[1][0] * matrix[0][3] * matrix[2][2] +
+                 matrix[2][0] * matrix[0][2] * matrix[1][3] -
+                 matrix[2][0] * matrix[0][3] * matrix[1][2];
+
+        inv[11] = -matrix[0][0] * matrix[1][1] * matrix[2][3] +
+                  matrix[0][0] * matrix[1][3] * matrix[2][1] +
+                  matrix[1][0] * matrix[0][1] * matrix[2][3] -
+                  matrix[1][0] * matrix[0][3] * matrix[2][1] -
+                  matrix[2][0] * matrix[0][1] * matrix[1][3] +
+                  matrix[2][0] * matrix[0][3] * matrix[1][1];
+
+        inv[15] = matrix[0][0] * matrix[1][1] * matrix[2][2] -
+                  matrix[0][0] * matrix[1][2] * matrix[2][1] -
+                  matrix[1][0] * matrix[0][1] * matrix[2][2] +
+                  matrix[1][0] * matrix[0][2] * matrix[2][1] +
+                  matrix[2][0] * matrix[0][1] * matrix[1][2] -
+                  matrix[2][0] * matrix[0][2] * matrix[1][1];
+
+        double determinant = matrix[0][0] * inv[0] + matrix[0][1] * inv[4] + matrix[0][2] * inv[8] + matrix[0][3] * inv[12];
+
+        if (determinant == 0)
+            return Transform();
+
+        determinant = 1.0 / determinant;
+
+        return Transform(
+                inv[0] * determinant, inv[1] * determinant, inv[2] * determinant, inv[3] * determinant,
+                inv[4] * determinant, inv[5] * determinant, inv[6] * determinant, inv[7] * determinant,
+                inv[8] * determinant, inv[9] * determinant, inv[10] * determinant, inv[11] * determinant,
+                inv[12] * determinant, inv[13] * determinant, inv[14] * determinant, inv[15] * determinant
+        );
     }
 };

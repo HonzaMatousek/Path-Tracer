@@ -19,6 +19,7 @@
 #include "../camera/CubeMapCamera.h"
 #include "../effect/DepthOfFieldEffect.h"
 #include "SphereEnd.h"
+#include "Cylinder.h"
 #include <fstream>
 #include <sstream>
 #include <map>
@@ -177,6 +178,24 @@ Scene::Scene(const std::string & fileName) : Scene() {
             }
             AddBody(std::move(sphere));
         }
+        else if(command == "cylinder") {
+            double radius, low, high;
+            lineStream >> radius >> low >> high;
+            auto sphere = std::make_unique<Cylinder>(transforms.top().Apply(Vector3D(0, 0, 0)),  transforms.top().ApplyWithoutTranslation(Vector3D(0,0,1)), radius, low, high, current_material->base);
+            if(current_material->albedoTexture && current_material->albedoTexture->isSpatial()) {
+                sphere->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(
+                        std::make_unique<PassThroughInterpolator>(),
+                        current_material
+                ));
+            }
+            else {
+                sphere->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(
+                        std::make_unique<SpherePolarInterpolator>(),
+                        current_material
+                ));
+            }
+            AddBody(std::move(sphere));
+        }
         else if(command == "current_material") {
             std::string newCurrentMaterialName;
             lineStream >> newCurrentMaterialName;
@@ -263,7 +282,7 @@ Scene::Scene(const std::string & fileName) : Scene() {
 void Scene::Render() {
     auto start = std::chrono::steady_clock::now();
     std::cout << "Compiling KD tree..." << std::endl;
-    Compile();
+    //Compile();
     std::cout << "KD tree compiled." << std::endl;
     std::cout << "Rendering. Using " << std::thread::hardware_concurrency() << " threads." << std::endl;
     std::random_device r;

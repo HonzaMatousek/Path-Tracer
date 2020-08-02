@@ -24,15 +24,22 @@ move 0 -1.5 0
 # model pool2.obj
 pop_transform
 
+current_material gold
+move 10 0 0
+rotate_y 45
+cylinder 1 -4 4
+pop_transform
+pop_transform
+
 background_texture sky5.jpg
 
 # camera_sphere    0 0 0         9192          4096
-# camera_sphere    0 0 0         2048          1024
-# output       lens-01a.jpg     10    1
+camera_sphere    0 0 0         2048          1024
+output       lens-01c.jpg     10    1
 
 # camera_sphere    0 -1 0         9192          4096
 # camera_env water_wavy
 # output       camera-06b.jpg     10    1
 
-camera  0 0 0    0 10 50    0 1 0        1280    720     60
-output       lens-01b.jpg     250    1
+# camera  0 0 0    0 10 50    0 1 0        1280    720     60
+# output       lens-01b.jpg     250    1
