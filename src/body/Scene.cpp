@@ -202,6 +202,54 @@ Scene::Scene(const std::string & fileName) : Scene() {
             lineStream >> ox >> oy >> oz >> nx >> ny >> nz >> radius;
             AddBody(std::make_unique<PlaneCircle>(transforms.top().Apply(Vector3D(ox, oy, oz)), transforms.top().ApplyWithoutTranslation(Vector3D(nx, ny, nz)), radius, current_material->base));
         }
+        else if(command == "lens") {
+            double radius, depth;
+            lineStream >> radius >> depth;
+            {
+                auto cylinder = std::make_unique<Cylinder>(transforms.top().Apply(Vector3D(0, 0, 0)), transforms.top().ApplyWithoutTranslation(Vector3D(0, 0, 1)), radius, -depth / 2, depth / 2, current_material->base);
+                if(current_material->albedoTexture && current_material->albedoTexture->isSpatial()) {
+                    cylinder->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(
+                            std::make_unique<PassThroughInterpolator>(),
+                            current_material
+                    ));
+                }
+                else {
+                    cylinder->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(
+                            std::make_unique<SpherePolarInterpolator>(),
+                            current_material
+                    ));
+                }
+                AddBody(std::move(cylinder));
+            }
+            // read one end
+            for(int i = 0; i < 2; i++) {
+                std::string type;
+                lineStream >> type;
+                if(type == "flat") {
+                    AddBody(std::make_unique<PlaneCircle>(transforms.top().Apply(Vector3D(0, 0, i == 0 ? -depth/2 : depth/2)), transforms.top().ApplyWithoutTranslation(Vector3D(0, 0, i == 0 ? -1 : 1)), radius, current_material->base));
+                }
+                else if(type == "sphere") {
+                    double curvatureRadius;
+                    lineStream >> curvatureRadius;
+                    double a = sqrt(curvatureRadius * curvatureRadius - radius * radius);
+                    double q = (std::abs(curvatureRadius) - a) * (std::signbit(curvatureRadius) ? -1 : 1);
+                    auto sphere = std::make_unique<SphereEnd>(transforms.top().Apply(Vector3D(0, 0, i == 0 ? -depth/2 - q : depth/2 + q)), curvatureRadius, transforms.top().ApplyWithoutTranslation(Vector3D(0, 0, i == 0 ? -1 : 1)), radius, current_material->base);
+                    if(current_material->albedoTexture && current_material->albedoTexture->isSpatial()) {
+                        sphere->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(
+                                std::make_unique<PassThroughInterpolator>(),
+                                current_material
+                        ));
+                    }
+                    else {
+                        sphere->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(
+                                std::make_unique<SpherePolarInterpolator>(),
+                                current_material
+                        ));
+                    }
+                    AddBody(std::move(sphere));
+                }
+            }
+        }
         else if(command == "current_material") {
             std::string newCurrentMaterialName;
             lineStream >> newCurrentMaterialName;

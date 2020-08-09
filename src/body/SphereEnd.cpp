@@ -25,7 +25,7 @@ void SphereEnd::Intersect(const Ray &ray, Intersection &intersection) const {
     if (t0 >= 0) {
         Vector3D point = ray.Point(t0);
         Vector3D v = (point - center).Normalize();
-        double cosAlpha = v.Dot(direction);
+        double cosAlpha = v.Dot(direction * (std::signbit(radius) ? -1 : 1));
         if(cosAlpha > maxCos) {
             intersection.ChooseCloser(Intersection(t0, this, point - center));
             return;
@@ -35,7 +35,7 @@ void SphereEnd::Intersect(const Ray &ray, Intersection &intersection) const {
     if (t1 >= 0) {
         Vector3D point = ray.Point(t1);
         Vector3D v = (point - center).Normalize();
-        double cosAlpha = v.Dot(direction);
+        double cosAlpha = v.Dot(direction * (std::signbit(radius) ? -1 : 1));
         if(cosAlpha > maxCos) {
             intersection.ChooseCloser(Intersection(t1, this, point - center));
         }
