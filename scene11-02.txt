@@ -1,6 +1,6 @@
 # 11th stream: Lenses
 
-# load_material_library materials.mtl
+load_material_library materials.mtl
 
 current_material whiteLight
 move 5 0 0
@@ -20,18 +20,21 @@ cylinder 1 2 3
 cylinder 1 4 5
 cylinder 1 6 7
 cylinder 1 8 9
+current_material mirror
+circle   0 0 -4        0 0 1        1
+circle   0 0 +4        0 0 -1        1
 pop_transform
 pop_transform
 
 # background_texture sky5.jpg
 
 # camera_sphere    0 0 0         9192          4096
-camera_sphere    2 0 0         2048          1024
-output       lens-02b.jpg     100    1
+camera_sphere    0 0 0         2048          1024
+output       lens-02c.jpg     10    1
 
 # camera_sphere    0 -1 0         9192          4096
 # camera_env water_wavy
 # output       camera-06b.jpg     10    1
 
-camera  2 0 0    -1 0 0    0 1 0        1280    720     60
-output       lens-02a.jpg     100    1
+# camera  2 0 0    -1 0 0    0 1 0        1280    720     60
+# output       lens-02a.jpg     10    1

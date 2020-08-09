@@ -20,6 +20,7 @@
 #include "../effect/DepthOfFieldEffect.h"
 #include "SphereEnd.h"
 #include "Cylinder.h"
+#include "PlaneCircle.h"
 #include <fstream>
 #include <sstream>
 #include <map>
@@ -195,6 +196,11 @@ Scene::Scene(const std::string & fileName) : Scene() {
                 ));
             }
             AddBody(std::move(sphere));
+        }
+        else if(command == "circle") {
+            double ox, oy, oz, nx, ny, nz, radius;
+            lineStream >> ox >> oy >> oz >> nx >> ny >> nz >> radius;
+            AddBody(std::make_unique<PlaneCircle>(transforms.top().Apply(Vector3D(ox, oy, oz)), transforms.top().ApplyWithoutTranslation(Vector3D(nx, ny, nz)), radius, current_material->base));
         }
         else if(command == "current_material") {
             std::string newCurrentMaterialName;
