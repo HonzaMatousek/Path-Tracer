@@ -60,7 +60,8 @@ void CommandRenderImage::Execute(SceneBuilder &sceneBuilder, std::istream &lineS
     std::string outputFileName;
     double exposition;
     int samples;
-    lineStream >> outputFileName >> samples >> exposition;
+    lineStream >> outputFileName >> sceneBuilder.image_width >> sceneBuilder.image_height >> samples >> exposition;
+    sceneBuilder.camera->SetSensorSize(sceneBuilder.image_width, sceneBuilder.image_height);
     sceneBuilder.image = std::make_unique<ImageJPEG>(sceneBuilder.image_width, sceneBuilder.image_height, 95);
     auto start = std::chrono::steady_clock::now();
     std::cout << "Compiling KD tree..." << std::endl;

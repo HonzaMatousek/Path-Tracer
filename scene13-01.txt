@@ -9,5 +9,5 @@ pop_transform
 
 background_texture sky3b.jpg
 
-camera    0 1 7     0 0 -1     0 1 0     1280 720  60
-output    scene13-01a.jpg       100    1
+camera    0 1 7     0 0 -1     0 1 0    60
+output    scene13-01a.jpg    1280 720     100    1

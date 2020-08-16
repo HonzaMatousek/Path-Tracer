@@ -14,7 +14,7 @@ SceneBuilder::SceneBuilder(Scene &scene) : scene(scene) {
     current_material = &scene.materialLibrary["whiteDiffuse"];
     image_width = 512;
     image_height = 512;
-    camera = std::make_unique<SphericalCamera>(Vector3D(0,0,0), image_width, image_height);
+    camera = std::make_unique<SphericalCamera>(Vector3D(0,0,0));
     effect = std::make_unique<Effect>();
 }
 

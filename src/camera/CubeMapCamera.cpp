@@ -4,7 +4,7 @@
 
 #include "CubeMapCamera.h"
 
-CubeMapCamera::CubeMapCamera(const Vector3D &eye, int width, int height) : eye(eye), width(width), height(height) {}
+CubeMapCamera::CubeMapCamera(const Vector3D &eye) : eye(eye) {}
 
 Ray CubeMapCamera::Project(double w, double h) const {
     if(w >= width / 4 && w < width / 2 && h < height / 3) {
@@ -56,4 +56,9 @@ Ray CubeMapCamera::Project(double w, double h) const {
         return Ray(eye, Vector3D(-1, hdiff, wdiff));
     }
     return Ray(eye, Vector3D(0,0,0));
+}
+
+void CubeMapCamera::SetSensorSize(int newSensorWidth, int newSensorHeight) {
+    width = newSensorWidth;
+    height = newSensorHeight;
 }

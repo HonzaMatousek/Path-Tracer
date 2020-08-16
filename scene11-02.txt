@@ -28,13 +28,12 @@ pop_transform
 
 # background_texture sky5.jpg
 
-# camera_sphere    0 0 0         9192          4096
-camera_sphere    0 0 0         2048          1024
-output       lens-02c.jpg     10    1
+camera_sphere    0 0 0
+output       lens-02c.jpg 2048 1024   10    1
 
-# camera_sphere    0 -1 0         9192          4096
+# camera_sphere    0 -1 0
 # camera_env water_wavy
-# output       camera-06b.jpg     10    1
+# output       camera-06b.jpg 2048 1024     10    1
 
-# camera  2 0 0    -1 0 0    0 1 0        1280    720     60
-# output       lens-02a.jpg     10    1
+# camera  2 0 0    -1 0 0    0 1 0    60
+# output       lens-02a.jpg 1280 720    10    1

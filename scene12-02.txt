@@ -6,8 +6,8 @@ model bunny.obj
 
 background_texture sky3b.jpg
 
-camera    0 1 -7     0 0 1     0 1 0     1280 720  60
-# output    rainbow03a.jpg       10000    1
+camera    0 1 -7     0 0 1     0 1 0     60
+# output    rainbow03a.jpg    1280 720     10000    1
 
-camera    0 1 7     0 0 -1     0 1 0     1280 720  60
-output    rainbow03c.jpg       10    1
+camera    0 1 7     0 0 -1     0 1 0      60
+output    rainbow03c.jpg    1280 720    10    1

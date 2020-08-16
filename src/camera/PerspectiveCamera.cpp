@@ -6,12 +6,7 @@
 
 #include <cmath>
 
-PerspectiveCamera::PerspectiveCamera(Vector3D eye, Vector3D direction, Vector3D up, int width, int height, double fov) : eye(eye), direction(direction), up(up), left(up.Cross(direction)), width(width), height(height), fov(fov)  {
-    this->up.Normalize() *= height;
-    this->left.Normalize() *= width;
-    this->direction.Normalize() *= width;
-    this->direction /= std::tan(fov * M_PI / 360);
-}
+PerspectiveCamera::PerspectiveCamera(Vector3D eye, Vector3D direction, Vector3D up, double fov) : eye(eye), direction(direction), up(up), left(up.Cross(direction)), fov(fov)  {}
 
 Ray PerspectiveCamera::Project(double w, double h) const {
     //0,0 => up + right + direction
@@ -23,4 +18,12 @@ Ray PerspectiveCamera::Project(double w, double h) const {
     double hp = 1 - (h / height) * 2;
 
     return Ray(eye, up * hp + left * wp + direction);
+}
+
+void PerspectiveCamera::SetSensorSize(int newSensorWidth, int newSensorHeight) {
+    width = newSensorWidth;
+    height = newSensorHeight;
+    up.Normalize() *= height;
+    left.Normalize() *= width;
+    direction.Normalize() *= width / std::tan(fov * M_PI / 360);
 }

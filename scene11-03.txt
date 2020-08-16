@@ -20,20 +20,20 @@ pop_transform
 
 background_texture sky5.jpg
 
-camera_sphere    2 0 0         1024          512
-output       lens-03a.jpg     10    1
+camera_sphere    2 0 0
+output       lens-03a.jpg  1024 512   10    1
 
-camera_sphere    -2 0 0         1024          512
-output       lens-03b.jpg     10    1
+camera_sphere    -2 0 0
+output       lens-03b.jpg  1024 512   10    1
 
-camera_sphere    0 2 0         1024          512
-output       lens-03c.jpg     10    1
+camera_sphere    0 2 0
+output       lens-03c.jpg  1024 512   10    1
 
-camera_sphere    0 -2 0         1024          512
-output       lens-03d.jpg     10    1
+camera_sphere    0 -2 0
+output       lens-03d.jpg  1024 512   10    1
 
-camera_sphere    0 0 2         1024          512
-output       lens-03e.jpg     10    1
+camera_sphere    0 0 2
+output       lens-03e.jpg  1024 512   10    1
 
-camera_sphere    0 0 -2         1024          512
-output       lens-03f.jpg     10    1
+camera_sphere    0 0 -2
+output       lens-03f.jpg  1024 512   10    1
