@@ -147,6 +147,14 @@ Kf 1.52
 Ko 0.0
 Kb 1 1 1
 
+newmtl earth
+
+Ka 0 0 0
+map_Kd earth.jpg
+map_Kn earth_normal.jpg
+Km 0
+Kr 0
+
 newmtl earth_diffuse
 
 Ka 0 0 0

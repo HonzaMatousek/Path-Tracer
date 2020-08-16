@@ -12,13 +12,13 @@ void CommandSphere::Execute(SceneBuilder &sceneBuilder, std::istream &lineStream
     auto sphere = std::make_unique<Sphere>(sceneBuilder.transforms.top().Apply(Vector3D(x, y, z)), radius, sceneBuilder.current_material->base);
     if(sceneBuilder.current_material->albedoTexture && sceneBuilder.current_material->albedoTexture->isSpatial()) {
         sphere->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(
-                std::make_unique<PassThroughInterpolator>(),
+                std::make_unique<RotateThroughInterpolator>(sceneBuilder.transforms.top()),
                 sceneBuilder.current_material
         ));
     }
     else {
         sphere->SetMaterialInterpolator(std::make_unique<TextureInterpolator>(
-                std::make_unique<SpherePolarInterpolator>(),
+                std::make_unique<SpherePolarInterpolator>(std::make_unique<RotateThroughInterpolator>(sceneBuilder.transforms.top())),
                 sceneBuilder.current_material
         ));
     }

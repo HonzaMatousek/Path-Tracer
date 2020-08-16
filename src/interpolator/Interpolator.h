@@ -80,6 +80,17 @@ public:
     }
 };
 
+class RotateThroughInterpolator : public Interpolator<Vector3D> {
+    Transform transform;
+public:
+    explicit RotateThroughInterpolator(const Transform & transform) : transform(transform) {}
+
+    [[ nodiscard ]]
+    Vector3D Interpolate(const Vector3D & coordinates) const override {
+        return transform.ApplyWithoutTranslation(coordinates);
+    }
+};
+
 class SpherePolarInterpolator : public Interpolator<Vector3D> {
     std::unique_ptr<Interpolator<Vector3D>> base;
 public:

@@ -1,0 +1,13 @@
+# 13th stream: Patches & fixes
+
+load_material_library materials.mtl
+
+rotate_y 30
+    current_material earth
+    sphere 0 0 0 1
+pop_transform
+
+background_texture sky3b.jpg
+
+camera    0 1 7     0 0 -1     0 1 0     1280 720  60
+output    scene13-01a.jpg       100    1
