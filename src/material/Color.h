@@ -2,6 +2,11 @@
 
 #include "../math/Vector3D.h"
 
+const double speedOfLight = 299792458;
+const double frequencyR = speedOfLight / 608e-9;
+const double frequencyG = speedOfLight / 552e-9;
+const double frequencyB = speedOfLight / 463e-9;
+
 class Color {
 public:
     double r;
@@ -47,4 +52,6 @@ public:
 
     [[ nodiscard ]]
     Color Exp() const;
+
+    static Color FromFrequency(double frequency);
 };

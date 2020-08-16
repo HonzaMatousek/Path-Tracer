@@ -19,7 +19,7 @@ public:
     Intersection(double t, const Body * body, Vector3D&& localCoordinates) : t(t), body(body), localCoordinates(localCoordinates) {}
 
     [[ nodiscard ]]
-    Ray Reflect(const Ray & incoming, Color & powerMultiplier, std::stack<Environment> & environments, std::mt19937 & generator);
+    Ray Reflect(const Ray & incoming, Color & powerMultiplier, double frequency, std::stack<Environment> & environments, std::mt19937 & generator);
 
     bool operator < (const Intersection & rhs) const {
         return t < rhs.t;

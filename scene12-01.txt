@@ -1,0 +1,11 @@
+# 12th stream: Rainbows
+
+load_material_library materials.mtl
+
+current_material glass
+sphere 0 0 0 1
+
+background_texture sky3.jpg
+
+camera    0 0 -5     0 0 1     0 1 0     1280 720  60
+output    rainbow01b.jpg       100    1

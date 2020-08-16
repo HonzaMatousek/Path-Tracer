@@ -37,7 +37,7 @@ Environment previous(std::stack<Environment> & environments) {
     return result;
 }
 
-Ray Intersection::Reflect(const Ray &incoming, Color& powerMultiplier, std::stack<Environment> & environments, std::mt19937 & generator) {
+Ray Intersection::Reflect(const Ray &incoming, Color& powerMultiplier, double frequency, std::stack<Environment> & environments, std::mt19937 & generator) {
     auto material = GetMaterial();
     auto normal = RandomDirection(GetNormal(material.normal), generator, material.roughness);
 
@@ -64,8 +64,8 @@ Ray Intersection::Reflect(const Ray &incoming, Color& powerMultiplier, std::stac
     }
     else {
         // going from outside in
-        refraction_ratio = environments.top().refractiveIndex / material.refractiveIndex;
-        newRefractiveIndex = material.refractiveIndex;
+        refraction_ratio = environments.top().refractiveIndex / (material.refractiveIndex * std::pow(material.dispersionFactor, (frequency - frequencyG) / 1e14));
+        newRefractiveIndex = (material.refractiveIndex * std::pow(material.dispersionFactor, (frequency - frequencyG) / 1e14));
         newAttenuation = material.attenuation;
         cos_i *= -1;
     }

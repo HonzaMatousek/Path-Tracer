@@ -31,7 +31,7 @@ background_texture sky5.jpg
 
 # camera_sphere    0 0 0         9192          4096
 camera_sphere    0 0 0         2048          1024
-output       lens-01c.jpg     250    1
+output       dispersion-01a.jpg     1000    1
 
 # camera_sphere    0 -1 0         9192          4096
 # camera_env water_wavy

@@ -133,3 +133,17 @@ Color Color::Exp() const {
        exp(b)
     );
 }
+
+Color Color::FromFrequency(double frequency) {
+    double r = - std::abs(frequency - frequencyR) / 1e14;
+    double g = - std::abs(frequency - frequencyG) / 1e14;
+    double b = - std::abs(frequency - frequencyB) / 1e14;
+    double x = frequencyG - frequencyR;
+    double x2 = 0.98 / (frequencyG - frequencyR);
+    double x3 = std::pow(1.02, (1 / ((frequencyB - frequencyG) / 1e14)));
+    return Color(
+        std::exp(- std::abs(frequency - frequencyR) / 1e13),
+        std::exp(- std::abs(frequency - frequencyG) / 1e13),
+        std::exp(- std::abs(frequency - frequencyB) / 1e13)
+    ) * 40;
+}

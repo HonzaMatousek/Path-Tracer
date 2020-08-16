@@ -44,14 +44,15 @@ inline const int iteration_limit = 5;
 
 void Scene::RenderCore(std::mt19937& generator, LineEmployer & lineEmployer) const {
     std::uniform_real_distribution<double> d(-0.5,0.5);
+    std::uniform_real_distribution<double> frequencyDistribution(frequencyR / 1.5, frequencyB * 1.5);
     for (int y = lineEmployer.getLine(); y < image_height; y = lineEmployer.getLine()) {
         for (int x = 0; x < image_width; x++) {
             double cam_x = d(generator);
             double cam_y = d(generator);
             Ray ray = camera->Project(x + cam_x, y + cam_y);
             effect->ModifyRay(ray, generator);
-            //Ray ray = camera.Project(x, y);
-            Color albedoMultiplier(1, 1, 1);
+            double frequency = frequencyDistribution(generator);
+            Color albedoMultiplier = Color::FromFrequency(frequency);
             albedoMultiplier *= 1 - std::abs(cam_x * cam_y);
             std::stack<Environment> environments;
             environments.push(camera->environment);
@@ -67,7 +68,7 @@ void Scene::RenderCore(std::mt19937& generator, LineEmployer & lineEmployer) con
                 if (albedoMultiplier == Color()) {
                     break;
                 }
-                ray = intersection.Reflect(ray, albedoMultiplier, environments, generator);
+                ray = intersection.Reflect(ray, albedoMultiplier, frequency, environments, generator);
             }
         }
     }
@@ -336,7 +337,7 @@ Scene::Scene(const std::string & fileName) : Scene() {
 void Scene::Render() {
     auto start = std::chrono::steady_clock::now();
     std::cout << "Compiling KD tree..." << std::endl;
-    //Compile();
+    Compile();
     std::cout << "KD tree compiled." << std::endl;
     std::cout << "Rendering. Using " << std::thread::hardware_concurrency() << " threads." << std::endl;
     std::random_device r;
@@ -390,6 +391,11 @@ void Scene::LoadMTL(const std::string & fileName) {
         }
         else if(command == "Kf") { // refractive index
             lineStream >> current_material->base.refractiveIndex;
+            double dispersionFactor;
+            lineStream >> dispersionFactor;
+            if(lineStream) {
+                current_material->base.dispersionFactor = dispersionFactor;
+            }
         }
         else if(command == "Ko") { // opacity
             lineStream >> current_material->base.opacity;

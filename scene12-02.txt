@@ -1,0 +1,13 @@
+# 12th stream: Rainbows
+
+load_material_library materials.mtl
+
+model bunny.obj
+
+background_texture sky3b.jpg
+
+camera    0 1 -7     0 0 1     0 1 0     1280 720  60
+# output    rainbow03a.jpg       10000    1
+
+camera    0 1 7     0 0 -1     0 1 0     1280 720  60
+output    rainbow03b.jpg       10000    1

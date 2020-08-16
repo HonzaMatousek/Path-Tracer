@@ -147,7 +147,8 @@ public:
                 material->base.refractiveIndex,
                 material->base.opacity,
                 material->normalTexture ? material->normalTexture->GetPixel(tex_coords.x, tex_coords.y, tex_coords.z).ToNormal() : material->base.normal,
-                material->base.attenuation
+                material->base.attenuation,
+                material->base.dispersionFactor
         );
     }
 };
