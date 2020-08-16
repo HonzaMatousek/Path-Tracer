@@ -27,6 +27,7 @@
 
 void Scene::AddBody(std::unique_ptr<Body> body) {
     bodies.emplace_back(std::move(body));
+    kdTree.reset();
 }
 
 void Scene::Intersect(const Ray & ray, Intersection & intersection) const {
@@ -39,6 +40,7 @@ void Scene::Intersect(const Ray & ray, Intersection & intersection) const {
 }
 
 void Scene::Compile() {
+    if(kdTree) return;
     std::vector<Body*> treeBodies;
     Vector3D l(std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity());
     Vector3D u(-std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity());

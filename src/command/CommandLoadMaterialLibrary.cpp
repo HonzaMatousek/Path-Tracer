@@ -15,6 +15,11 @@ void CommandLoadMaterialLibrary::Execute(SceneBuilder &sceneBuilder, std::istrea
     lineStream >> mtlFileName;
     TexturedMaterial * current_material = sceneBuilder.GetMaterial("whiteDiffuse");
     std::ifstream file(mtlFileName);
+    if(!file) {
+        std::ostringstream os;
+        os << "Material library file \"" << mtlFileName << "\" not found.";
+        throw std::runtime_error(os.str());
+    }
     std::string line;
     while(std::getline(file, line)) {
         std::string command;

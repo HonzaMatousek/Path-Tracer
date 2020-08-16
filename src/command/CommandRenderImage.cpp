@@ -11,6 +11,7 @@
 #include "../math/Intersection.h"
 #include "../body/Scene.h"
 #include "../image/ImageJPEG.h"
+#include "../camera/SphericalCamera.h"
 
 class LineEmployer {
     int freeLine = 0;
@@ -61,6 +62,11 @@ void CommandRenderImage::Execute(SceneBuilder &sceneBuilder, std::istream &lineS
     double exposition;
     int samples;
     lineStream >> outputFileName >> sceneBuilder.image_width >> sceneBuilder.image_height >> samples >> exposition;
+    std::cout << "Preparing to render to \"" << outputFileName << "\"" << std::endl;
+    if(!sceneBuilder.camera) {
+        std::cout << "Warning, no camera set, using default." << std::endl;
+        sceneBuilder.camera = std::make_unique<SphericalCamera>(Vector3D(0,0,0));
+    }
     sceneBuilder.camera->SetSensorSize(sceneBuilder.image_width, sceneBuilder.image_height);
     sceneBuilder.image = std::make_unique<ImageJPEG>(sceneBuilder.image_width, sceneBuilder.image_height, 95);
     auto start = std::chrono::steady_clock::now();
@@ -84,9 +90,9 @@ void CommandRenderImage::Execute(SceneBuilder &sceneBuilder, std::istream &lineS
         for(auto & thread : threads) {
             thread.join();
         }
-        std::cout << (sample + 1) << "/" << samples << std::endl;
+        std::cout << "Sample: " << (sample + 1) << "/" << samples << "\t\r" << std::flush;
     }
-    auto stop = std::chrono::steady_clock::now();
-    std::cout << "Finished, took " << ((stop - start).count() / 1e9) <<  " s." << std::endl;
     sceneBuilder.image->Save(outputFileName, exposition / samples);
+    auto stop = std::chrono::steady_clock::now();
+    std::cout << "Finished, took " << ((stop - start).count() / 1e9) <<  " s, result saved into " << outputFileName << std::endl;
 }

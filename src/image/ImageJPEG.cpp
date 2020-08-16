@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <jpeglib.h>
 
+#include <sstream>
+
 ImageJPEG::ImageJPEG(int width, int height, int quality) : Image(width, height), quality(quality) {}
 
 void ImageJPEG::Save(const std::string & fileName, double exposition) const {
@@ -139,7 +141,9 @@ ImageJPEG::ImageJPEG(const std::string &fileName, double exposition, int quality
      */
 
     if ((infile = fopen(fileName.c_str(), "rb")) == NULL) {
-        fprintf(stderr, "can't open %s\n", fileName.c_str());
+        std::ostringstream os;
+        os << "Cannot open file \"" << fileName << "\".";
+        throw std::runtime_error(os.str());
     }
 
     /* Step 1: allocate and initialize JPEG decompression object */

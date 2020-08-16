@@ -1,0 +1,21 @@
+# 13th stream: Patches & fixes
+
+load_material_library materials.mtl
+
+rotate_y 30
+    model bunny.obj
+pop_transform
+
+background_texture sky3b.jpg
+
+camera    0 1 7     0 0 -1     0 1 0     60
+output    scene13-03a.jpg      1280 720    10    1
+output    scene13-03b.jpg      720 720    10    1
+output    scene13-03c.jpg      360 720    10    1
+output    scene13-03d.jpg      1440 720    10    1
+
+move 2 0 0
+    model bunny.obj
+pop_transform
+
+output    scene13-03e.jpg      1280 720    10    1
