@@ -10,4 +10,4 @@ camera    0 1 -7     0 0 1     0 1 0     1280 720  60
 # output    rainbow03a.jpg       10000    1
 
 camera    0 1 7     0 0 -1     0 1 0     1280 720  60
-output    rainbow03b.jpg       10000    1
+output    rainbow03c.jpg       10    1

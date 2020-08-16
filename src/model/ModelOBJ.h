@@ -1,8 +1,11 @@
 #pragma once
 
-#include "Model.h"
+#include <string>
 
-class ModelOBJ : public Model {
+class Transform;
+class SceneBuilder;
+
+class ModelOBJ {
 public:
-    static void Import(const std::string & fileName, const Transform & transform, Scene & scene);
+    static void Import(const std::string & fileName, const Transform & transform, SceneBuilder & sceneBuilder);
 };

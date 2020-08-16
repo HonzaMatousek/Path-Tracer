@@ -5,6 +5,11 @@
 #include <fstream>
 #include <sstream>
 
+#include "../math/Transform.h"
+#include "../command/SceneBuilder.h"
+#include "../body/Scene.h"
+#include "../command/CommandLoadMaterialLibrary.h"
+
 const Vector3D & findIndex(std::vector<Vector3D> & vertices, int index) {
     if(index > 0) {
         return vertices[index - 1];
@@ -30,15 +35,20 @@ void readFaceVertex(std::istream & is, int & vIndex, int & vtIndex, int & vnInde
     }
 }
 
-void ModelOBJ::Import(const std::string &fileName, const Transform & transform, Scene &scene) {
-    const TexturedMaterial * current_material = scene.GetMaterial("whiteDiffuse");
+void ModelOBJ::Import(const std::string &fileName, const Transform & transform, SceneBuilder &sceneBuilder) {
+    const TexturedMaterial * current_material = sceneBuilder.GetMaterial("whiteDiffuse");
     std::ifstream file(fileName);
+    if(!file) {
+        std::ostringstream os;
+        os << "Model \"" << fileName << "\" not exists.";
+        throw std::runtime_error(os.str());
+    }
     std::string line;
     std::vector<Vector3D> vertices; // vertex - vertices
     std::vector<Vector3D> verticesTexture; // vertex - vertices
     std::vector<Vector3D> verticesNormal; // vertex - vertices
     double lowest = 10000;
-    while(std::getline(file, line)) {
+    for(int lineCounter = 1; std::getline(file, line); lineCounter++) {
         std::string command;
         std::istringstream lineStream(line);
         lineStream >> command;
@@ -99,18 +109,16 @@ void ModelOBJ::Import(const std::string &fileName, const Transform & transform, 
                         findIndex(verticesNormal, an), findIndex(verticesNormal, bn), findIndex(verticesNormal, cn)
                 ));
             }
-            scene.AddBody(std::move(triangle));
+            sceneBuilder.scene.AddBody(std::move(triangle));
         }
         else if(command == "mtllib") {
-            std::string mtlFileName;
-            lineStream >> mtlFileName;
-            scene.LoadMTL(mtlFileName);
+            CommandLoadMaterialLibrary cmd;
+            cmd.Execute(sceneBuilder, lineStream);
         }
         else if(command == "usemtl") {
             std::string materialName;
             lineStream >> materialName;
-            current_material = scene.GetMaterial(materialName);
+            current_material = sceneBuilder.GetMaterial(materialName);
         }
     }
-    std::cout << "lowest:" << lowest << std::endl;
 }

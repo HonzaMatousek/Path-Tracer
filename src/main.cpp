@@ -8,6 +8,11 @@ int main(int argc, char * argv[]) {
         return 1;
     }
 
-    Scene scene(argv[1]);
+    try {
+        Scene scene(argv[1]);
+    }
+    catch(std::exception & e) {
+        std::cerr << "Program failed:" << std::endl << e.what() << std::endl;
+    }
     return 0;
 }
