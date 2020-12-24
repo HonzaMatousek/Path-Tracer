@@ -28,10 +28,14 @@ Project is currently on hold; sometime I will return and continue.
 
 ## Known issues
 
-* File path in loaded file is not relative to including file.
+* File path in loaded file is not relative to including file. (Program must be run from examples directory.)
 * Lack of documentation and working examples.
 * It is slow as ~~hell~~ path tracer.
 
 ## State of code
 
 Source code contains many bugs and the are many unfinished things. To compile it, use `cmake`. Linux is preferred.
+
+## License
+
+Code is licensed under GPLv3 license. Feel free to fork / suggest changes.
